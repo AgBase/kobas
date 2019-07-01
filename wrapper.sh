@@ -1,5 +1,4 @@
 #!/bin/bash
-
 ##SET UP OPTIONS
 
 while getopts ab:c:C:d:e:f:ghi:k:l:m:n:o:p:q:r:s:t:v:x:y:z option
@@ -172,7 +171,7 @@ fi
 if [ $1 == "-g" ]
 then
     if [ -n "${bgfile}" ]; then ARGS="$ARGS -b $bgfile"; fi
-    if [ $bgfile == ??? ] || [ $bgfile == ???? ]
+    if [[ $bgfile == "???" ]] || [[ $bgfile == "????" ]]
     then
         gunzip sqlite3/$bgfile'.db.gz'
         gunzip sqlite3/organism.db.gz
@@ -201,7 +200,6 @@ then
     if [ -n "${cutoff}" ]; then ARGS="$ARGS -c $cutoff"; fi
     if [ -n "${coverage}" ]; then ARGS="$ARGS -C $coverage"; fi
     if [ -n "${databases}" ]; then ARGS="$ARGS -d $databases"; fi
-    if [ -n "${fgfile}"]; then ARGS="$ARGS -f $fgfile"; fi
     if [ -n "${eval}" ]; then ARGS="$ARGS -E $eval"; fi
     if [ -n "${infile}" ]; then ARGS="$ARGS -i $infile"; fi
     if [ -n "${kobashome}" ]; then ARGS="$ARGS -k $kobashome"; fi #MIGHT WANT TO INCLUDE IN HELP INFO THAT THIS IS THE ABSOLUTE PATH IN THE CONTAINER
@@ -219,7 +217,7 @@ then
     if [ -n "${blastx}" ]; then ARGS="$ARGS -x $blastx"; fi #MAYBE I SHOULDN'T PROVIDE THIS OPTION IF IT NEVER CHANGES
     if [ -n "${blastdb}" ]; then ARGS="$ARGS -y $blastdb"; fi
     if [ -n "${ortholog}" ]; then ARGS="$ARGS -Z $ortholog"; fi
-    if [ $intype == 'fasta:pro' ] || [ $intype == 'fasta:nuc' ]
+    if [ $intype = 'fasta:pro' ] || [ $intype = 'fasta:nuc' ]
     then
         gunzip seq_pep/$species'.pep.fasta.gz'
     fi
