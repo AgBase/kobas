@@ -18,7 +18,7 @@ do
 		h) ;;
 		i) infile=${OPTARG};;
 		k) kobashome=${OPTARG};;
-		l) ;;
+		l) list=${OPTARG};;
                 m) method=${OPTARG};;
 		n) fdr=${OPTARG};;
                 o) out=${OPTARG};;
@@ -143,7 +143,7 @@ blastdb="/work-dir/seq_pep"
       
 
 #SO THAT THIS CONTAINER CAN BE USED BOTH IN CLI AND DE I SET KOBASHOME, KOBASDB AND BLASTDB TO THE WORKING-DIR AND THEN PEOPLE CAN OPTIONALLY OVERRIDE IN CLI
-if [ -a ]
+if [ $1 == "-a" ]
 then 
     gunzip sqlite3/$species'.db.gz'
     gunzip sqlite3/organism.db.gz
@@ -169,13 +169,62 @@ then
     kobas-annotate -i $infile -t $intype -s $species -o $out -v $blasthome -p $blastp -x $blastx -k $kobashome -q $kobasdb -y $blastdb $ARGS
 fi
 
-#if -g 
-#	kobas-identify 
+if [ $1 == "-g" ]
+then
+    if [ -n "${bgfile}" ]; then ARGS="$ARGS -b $bgfile"; fi
+    if [ $bgfile == ??? ] || [ $bgfile == ???? ]
+    then
+        gunzip sqlite3/$bgfile'.db.gz'
+        gunzip sqlite3/organism.db.gz
+    fi
+    if [ -n "${cutoff}" ]; then ARGS="$ARGS -c $cutoff"; fi
+    if [ -n "${databases}" ]; then ARGS="$ARGS -d $databases"; fi
+    if [ -n "${fgfile}" ]; then ARGS="$ARGS -f $fgfile"; fi
+    if [ -n "${kobashome}" ]; then ARGS="$ARGS -k $kobashome"; fi #MIGHT WANT TO INCLUDE IN HELP INFO THAT THIS IS THE ABSOLUTE PATH IN THE CONTAINER
+    if [ -n "${method}" ]; then ARGS="$ARGS -m $method"; fi
+    if [ -n "${fdr}" ]; then ARGS="$ARGS -n $fdr"; fi
+    if [ -n "${out}" ]; then ARGS="$ARGS -o $out"; fi
+    if [ -n "${blastp}" ]; then ARGS="$ARGS -p $blastp"; fi #MAYBE I SHOULDN'T PROVIDE THIS OPTION IF IT NEVER CHANGES
+    if [ -n "${kobasdb}" ]; then ARGS="$ARGS -q $kobasdb"; fi #MIGHT WANT TO INCLUDE IN HELP INFO THAT THIS IS THE ABSOLUTE PATH IN THE CONTAINER
+    if [ -n "${blasthome}" ]; then ARGS="$ARGS -v $blasthome"; fi #MAYBE I SHOULDN'T PROVIDE THIS OPTION IF IT NEVER CHANGES
+    if [ -n "${blastx}" ]; then ARGS="$ARGS -x $blastx"; fi #MAYBE I SHOULDN'T PROVIDE THIS OPTION IF IT NEVER CHANGES
+    if [ -n "${blastdb}" ]; then ARGS="$ARGS -y $blastdb"; fi
+    kobas-identify -f $fgfile -o $out -v $blasthome -p $blastp -x $blastx -k $kobashome -q $kobasdb -y $blastdb $ARGS
+fi
 
-#if -a && -g
-#	kobas-run
 
-
+if [ $1 == "-a" ] && [ $2 == "-g" ]
+then
+    gunzip sqlite3/$species'.db.gz'
+    gunzip sqlite3/organism.db.gz
+    if [ -n "${bgfile}" ]; then ARGS="$ARGS -b $bgfile"; fi
+    if [ -n "${cutoff}" ]; then ARGS="$ARGS -c $cutoff"; fi
+    if [ -n "${coverage}" ]; then ARGS="$ARGS -C $coverage"; fi
+    if [ -n "${databases}" ]; then ARGS="$ARGS -d $databases"; fi
+    if [ -n "${fgfile}"]; then ARGS="$ARGS -f $fgfile"; fi
+    if [ -n "${eval}" ]; then ARGS="$ARGS -E $eval"; fi
+    if [ -n "${infile}" ]; then ARGS="$ARGS -i $infile"; fi
+    if [ -n "${kobashome}" ]; then ARGS="$ARGS -k $kobashome"; fi #MIGHT WANT TO INCLUDE IN HELP INFO THAT THIS IS THE ABSOLUTE PATH IN THE CONTAINER
+    if [ -n "${method}" ]; then ARGS="$ARGS -m $method"; fi
+    if [ -n "${fdr}" ]; then ARGS="$ARGS -n $fdr"; fi
+    if [ -n "${ncpus}" ]; then ARGS="$ARGS -N $ncpus"; fi
+    if [ -n "${out}" ]; then ARGS="$ARGS -o $out"; fi
+    if [ -n "${blastp}" ]; then ARGS="$ARGS -p $blastp"; fi #MAYBE I SHOULDN'T PROVIDE THIS OPTION IF IT NEVER CHANGES
+    if [ -n "${kobasdb}" ]; then ARGS="$ARGS -q $kobasdb"; fi #MIGHT WANT TO INCLUDE IN HELP INFO THAT THIS IS THE ABSOLUTE PATH IN THE CONTAINER
+    if [ -n "${rank}" ]; then ARGS="$ARGS -R $rank"; fi
+    if [ -n "${species}" ]; then ARGS="$ARGS -s $species"; fi
+    if [ -n "${inspecies}" ]; then ARGS="$ARGS -S $inspecies"; fi
+    if [ -n "${intype}" ]; then ARGS="$ARGS -t $intype"; fi
+    if [ -n "${blasthome}" ]; then ARGS="$ARGS -v $blasthome"; fi #MAYBE I SHOULDN'T PROVIDE THIS OPTION IF IT NEVER CHANGES
+    if [ -n "${blastx}" ]; then ARGS="$ARGS -x $blastx"; fi #MAYBE I SHOULDN'T PROVIDE THIS OPTION IF IT NEVER CHANGES
+    if [ -n "${blastdb}" ]; then ARGS="$ARGS -y $blastdb"; fi
+    if [ -n "${ortholog}" ]; then ARGS="$ARGS -Z $ortholog"; fi
+    if [ $intype == 'fasta:pro' ] || [ $intype == 'fasta:nuc' ]
+    then
+        gunzip seq_pep/$species'.pep.fasta.gz'
+    fi
+    kobas-run -i $infile -t $intype -s $species -o $out -v $blasthome -p $blastp -x $blastx -k $kobashome -q $kobasdb -y $blastdb $ARGS
+fi
 #rm -r seq_pep
 #rm -r sqlite3
 exit 0
