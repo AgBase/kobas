@@ -116,28 +116,28 @@ blastdb="/work-dir/seq_pep"
 
 #IF STATEMENTS EXIST FOR EACH OPTIONAL PARAMETER WITH AN ARGUMENT
 #OPTIONS REQUIRED FOR ONE ANALYSIS ARE CONSIDERED OPTIONAL HERE BECAUSE THEY WON'T BE PROVIDED IN ALL CIRCUMSTANCES
-if [ -n "${bgfile}" ]; then ARGS="$ARGS -b $bgfile"; fi
-if [ -n "${cutoff}" ]; then ARGS="$ARGS -c $cutoff"; fi
-if [ -n "${coverage}" ]; then ARGS="$ARGS -C $coverage"; fi
-if [ -n "${databases}" ]; then ARGS="$ARGS -d $databases"; fi
-if [ -n "${fgfile}"]; then ARGS="$ARGS -f $fgfile"; fi
-if [ -n "${eval}" ]; then ARGS="$ARGS -e $eval"; fi
-if [ -n "${infile}" ]; then ARGS="$ARGS -i $infile"; fi
-if [ -n "${kobashome}" ]; then ARGS="$ARGS -k $kobashome"; fi #MIGHT WANT TO INCLUDE IN HELP INFO THAT THIS IS THE ABSOLUTE PATH IN THE CONTAINER
-if [ -n "${method}" ]; then ARGS="$ARGS -m $method"; fi
-if [ -n "${fdr}" ]; then ARGS="$ARGS -n $fdr"; fi
-if [ -n "${out}" ]; then ARGS="$ARGS -o $out"; fi
-if [ -n "${blastp}" ]; then ARGS="$ARGS -p $blastp"; fi #MAYBE I SHOULDN'T PROVIDE THIS OPTION IF IT NEVER CHANGES
-if [ -n "${kobasdb}" ]; then ARGS="$ARGS -q $kobasdb"; fi #MIGHT WANT TO INCLUDE IN HELP INFO THAT THIS IS THE ABSOLUTE PATH IN THE CONTAINER
-if [ -n "${rank}" ]; then ARGS="$ARGS -r $rank"; fi 
-if [ -n "${species}" ]; then ARGS="$ARGS -s $species"; fi
-if [ -n "${inspecies}" ]; then ARGS="$ARGS -S $inspecies"; fi
-if [ -n "${intype}" ]; then ARGS="$ARGS -t $intype"; fi
-if [ -n "${blasthome}" ]; then ARGS="$ARGS -v $blasthome"; fi #MAYBE I SHOULDN'T PROVIDE THIS OPTION IF IT NEVER CHANGES
-if [ -n "${blastx}" ]; then ARGS="$ARGS -x $blastx"; fi #MAYBE I SHOULDN'T PROVIDE THIS OPTION IF IT NEVER CHANGES
-if [ -n "${blastdb}" ]; then ARGS="$ARGS -y $blastdb"; fi 
-if [ -n "${ortholog}" ]; then ARGS="$ARGS -z $ortholog"; fi
-if [ -n "${ortholog}" ]; then ARGS="$ARGS -Z $ortholog"; fi
+#if [ -n "${bgfile}" ]; then ARGS="$ARGS -b $bgfile"; fi
+#if [ -n "${cutoff}" ]; then ARGS="$ARGS -c $cutoff"; fi
+#if [ -n "${coverage}" ]; then ARGS="$ARGS -C $coverage"; fi
+#if [ -n "${databases}" ]; then ARGS="$ARGS -d $databases"; fi
+#if [ -n "${fgfile}"]; then ARGS="$ARGS -f $fgfile"; fi
+#if [ -n "${eval}" ]; then ARGS="$ARGS -e $eval"; fi
+#if [ -n "${infile}" ]; then ARGS="$ARGS -i $infile"; fi
+#if [ -n "${kobashome}" ]; then ARGS="$ARGS -k $kobashome"; fi #MIGHT WANT TO INCLUDE IN HELP INFO THAT THIS IS THE ABSOLUTE PATH IN THE CONTAINER
+#if [ -n "${method}" ]; then ARGS="$ARGS -m $method"; fi
+#if [ -n "${fdr}" ]; then ARGS="$ARGS -n $fdr"; fi
+#if [ -n "${out}" ]; then ARGS="$ARGS -o $out"; fi
+#if [ -n "${blastp}" ]; then ARGS="$ARGS -p $blastp"; fi #MAYBE I SHOULDN'T PROVIDE THIS OPTION IF IT NEVER CHANGES
+#if [ -n "${kobasdb}" ]; then ARGS="$ARGS -q $kobasdb"; fi #MIGHT WANT TO INCLUDE IN HELP INFO THAT THIS IS THE ABSOLUTE PATH IN THE CONTAINER
+#if [ -n "${rank}" ]; then ARGS="$ARGS -r $rank"; fi 
+#if [ -n "${species}" ]; then ARGS="$ARGS -s $species"; fi
+#if [ -n "${inspecies}" ]; then ARGS="$ARGS -S $inspecies"; fi
+#if [ -n "${intype}" ]; then ARGS="$ARGS -t $intype"; fi
+#if [ -n "${blasthome}" ]; then ARGS="$ARGS -v $blasthome"; fi #MAYBE I SHOULDN'T PROVIDE THIS OPTION IF IT NEVER CHANGES
+#if [ -n "${blastx}" ]; then ARGS="$ARGS -x $blastx"; fi #MAYBE I SHOULDN'T PROVIDE THIS OPTION IF IT NEVER CHANGES
+#if [ -n "${blastdb}" ]; then ARGS="$ARGS -y $blastdb"; fi 
+#if [ -n "${ortholog}" ]; then ARGS="$ARGS -z $ortholog"; fi
+#if [ -n "${ortholog}" ]; then ARGS="$ARGS -Z $ortholog"; fi
 #COVERAGE, CUTOFF AND ORTHOLOG HAVE FLAG DISCREPANCIES BETWEEN ANNOT, IDENT AND RUN--NEED TO COME UP WITH A WAY TO SUPPLY THEM TO KOBAS CORRECTLY
 #CHECK RUN TO MAKE SURE Z ISN'T SUPPOSED TO BE z AND VICE VERSA WITH ANNOT
       
@@ -147,6 +147,21 @@ if [ -a ]
 then 
     gunzip sqlite3/$species'.db.gz'
     gunzip sqlite3/organism.db.gz
+    if [ -n "${coverage}" ]; then ARGS="$ARGS -C $coverage"; fi
+    if [ -n "${eval}" ]; then ARGS="$ARGS -e $eval"; fi
+    if [ -n "${infile}" ]; then ARGS="$ARGS -i $infile"; fi
+    if [ -n "${kobashome}" ]; then ARGS="$ARGS -k $kobashome"; fi #MIGHT WANT TO INCLUDE IN HELP INFO THAT THIS IS THE ABSOLUTE PATH IN THE CONTAINER
+    if [ -n "${fdr}" ]; then ARGS="$ARGS -n $fdr"; fi
+    if [ -n "${out}" ]; then ARGS="$ARGS -o $out"; fi
+    if [ -n "${blastp}" ]; then ARGS="$ARGS -p $blastp"; fi #MAYBE I SHOULDN'T PROVIDE THIS OPTION IF IT NEVER CHANGES
+    if [ -n "${kobasdb}" ]; then ARGS="$ARGS -q $kobasdb"; fi #MIGHT WANT TO INCLUDE IN HELP INFO THAT THIS IS THE ABSOLUTE PATH IN THE CONTAINER
+    if [ -n "${rank}" ]; then ARGS="$ARGS -r $rank"; fi
+    if [ -n "${species}" ]; then ARGS="$ARGS -s $species"; fi    
+    if [ -n "${intype}" ]; then ARGS="$ARGS -t $intype"; fi
+    if [ -n "${blasthome}" ]; then ARGS="$ARGS -v $blasthome"; fi #MAYBE I SHOULDN'T PROVIDE THIS OPTION IF IT NEVER CHANGES
+    if [ -n "${blastx}" ]; then ARGS="$ARGS -x $blastx"; fi #MAYBE I SHOULDN'T PROVIDE THIS OPTION IF IT NEVER CHANGES
+    if [ -n "${blastdb}" ]; then ARGS="$ARGS -y $blastdb"; fi
+    if [ -n "${ortholog}" ]; then ARGS="$ARGS -z $ortholog"; fi
     if [ $intype == 'fasta:pro' ] || [ $intype == 'fasta:nuc' ] 
     then 
 	gunzip seq_pep/$species'.pep.fasta.gz'
