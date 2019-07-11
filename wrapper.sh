@@ -173,6 +173,3 @@ then
 
     kobas-identify -f $fgfile -o $out -v $blasthome -p $blastp -x $blastx -k $kobashome -q $kobasdb -y $blastdb $ARGS
 fi
-rm -r ./seq_pep
-rm -r ./sqlite3
-exit 0
