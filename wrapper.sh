@@ -34,7 +34,7 @@ do
         esac
 done
 #####################################################################################################
-if [ "$help" = "true" ]; then
+if [[ "$help" = "true" ]] ; then
   echo "Options:
     [-h prints this help statement]
     [-a runs KOBAS annotate]
@@ -89,7 +89,7 @@ kobasdb="/work-dir/kobas/sqlite3"
 blastdb="/work-dir/kobas/seq_pep"
 
 #SO THAT THIS CONTAINER CAN BE USED BOTH IN CLI AND DE I SET KOBASHOME, KOBASDB AND BLASTDB TO THE WORKING-DIR AND THEN PEOPLE CAN OPTIONALLY OVERRIDE IN CLI
-if [ "$anno" = "true" ]
+if [[ "$anno" = "true" ]]
 then 
     gunzip sqlite3/$species'.db.gz'
     gunzip sqlite3/organism.db.gz
@@ -115,7 +115,7 @@ then
     kobas-annotate -i $infile -t $intype -s $species -o $out -v $blasthome -p $blastp -x $blastx -k $kobashome -q $kobasdb -y $blastdb $ARGS
 fi
 
-if [ "$ident" = "true" ]
+if [[ "$ident" = "true" ]]
 then
     if [ -n "${bgfile}" ]; then ARGS="$ARGS -b $bgfile"; fi
     if [[ $bgfile == "???" ]] || [[ $bgfile == "????" ]]
@@ -139,7 +139,7 @@ then
 fi
 
 
-if [ "$anno" = "true" ] && [ '$ident" = "true" ]
+if [[ "$anno" = "true" ]] && [[ '$ident" = "true" ]]
 then
     gunzip sqlite3/$species'.db.gz'
     gunzip sqlite3/organism.db.gz
