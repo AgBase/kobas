@@ -153,8 +153,6 @@ then
     if [ -n "${blastp}" ]; then ARGS="$ARGS -p $blastp"; fi #MAYBE I SHOULDN'T PROVIDE THIS OPTION IF IT NEVER CHANGES
     if [ -n "${kobasdb}" ]; then ARGS="$ARGS -q $kobasdb"; fi #MIGHT WANT TO INCLUDE IN HELP INFO THAT THIS IS THE ABSOLUTE PATH IN THE CONTAINER
     if [ -n "${rank}" ]; then ARGS="$ARGS -r $rank"; fi
-#    if [ -n "${species}" ]; then ARGS="$ARGS -s $species"; fi
-#    if [ -n "${intype}" ]; then ARGS="$ARGS -t $intype"; fi
     if [ -n "${blasthome}" ]; then ARGS="$ARGS -v $blasthome"; fi #MAYBE I SHOULDN'T PROVIDE THIS OPTION IF IT NEVER CHANGES
     if [ -n "${blastx}" ]; then ARGS="$ARGS -x $blastx"; fi #MAYBE I SHOULDN'T PROVIDE THIS OPTION IF IT NEVER CHANGES
     if [ -n "${blastdb}" ]; then ARGS="$ARGS -y $blastdb"; fi
