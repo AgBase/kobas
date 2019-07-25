@@ -6,15 +6,15 @@ do
         case "${option}"
         in
 
-                a) ;;
+                a) anno=true ;;
                 b) bgfile=${OPTARG};;
                 c) cutoff=${OPTARG};;
 		C) coverage=${OPTARG};;
                 d) databases=${OPTARG};;
                 f) fgfile=${OPTARG};;
                 e) eval=${OPTARG};;
-                g) ;;
-		h) ;;
+                g) ident=true;;
+		h) help=true;;
 		i) infile=${OPTARG};;
 		k) kobashome=${OPTARG};;
 		l) list=${OPTARG};;
@@ -34,7 +34,7 @@ do
         esac
 done
 #####################################################################################################
-if [ "$1" == "-h" ]; then
+if [ "$anno" = "true" ]; then
   echo "Options:
     [-h prints this help statement]
     [-a runs KOBAS annotate]
@@ -89,7 +89,7 @@ kobasdb="/work-dir/kobas/sqlite3"
 blastdb="/work-dir/kobas/seq_pep"
 
 #SO THAT THIS CONTAINER CAN BE USED BOTH IN CLI AND DE I SET KOBASHOME, KOBASDB AND BLASTDB TO THE WORKING-DIR AND THEN PEOPLE CAN OPTIONALLY OVERRIDE IN CLI
-if [ $1 == "-a" ]
+if [ "$anno" = "true" ]
 then 
     gunzip sqlite3/$species'.db.gz'
     gunzip sqlite3/organism.db.gz
@@ -115,7 +115,7 @@ then
     kobas-annotate -i $infile -t $intype -s $species -o $out -v $blasthome -p $blastp -x $blastx -k $kobashome -q $kobasdb -y $blastdb $ARGS
 fi
 
-if [ $1 == "-g" ]
+if [ "$ident" = "true" ]
 then
     if [ -n "${bgfile}" ]; then ARGS="$ARGS -b $bgfile"; fi
     if [[ $bgfile == "???" ]] || [[ $bgfile == "????" ]]
@@ -139,7 +139,7 @@ then
 fi
 
 
-if [ $1 == "-a" ] && [ $2 == "-g" ]
+if [ "$anno" = "true" ] && [ '$ident" = "true" ]
 then
     gunzip sqlite3/$species'.db.gz'
     gunzip sqlite3/organism.db.gz
