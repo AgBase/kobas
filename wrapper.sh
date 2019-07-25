@@ -139,7 +139,7 @@ then
 fi
 
 
-if [[ "$anno" = "true" ]] && [[ '$ident" = "true" ]]
+if [[ "$anno" = "true" ]] && [[ "$ident" = "true" ]]
 then
     gunzip sqlite3/$species'.db.gz'
     gunzip sqlite3/organism.db.gz
