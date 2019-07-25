@@ -1,7 +1,7 @@
 #!/bin/bash
 ##SET UP OPTIONS
 
-while getopts ab:c:C:d:e:f:ghi:k:l:m:n:o:p:q:r:s:t:v:x:y:z option
+while getopts ab:c:C:d:e:f:ghi:jk:l:m:n:o:p:q:r:s:t:v:x:y:z option
 do
         case "${option}"
         in
