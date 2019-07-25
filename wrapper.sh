@@ -160,8 +160,7 @@ then
     if [ $intype == 'fasta:pro' ] || [ $intype == 'fasta:nuc' ]
     then
         gunzip seq_pep/$species'.pep.fasta.gz'
-    fi
-
+    
     kobas-annotate -i $infile -t $intype -s $species -o $out -v $blasthome -p $blastp -x $blastx -k $kobashome -q $kobasdb -y $blastdb $ARGS
 
     fgfile=$out
