@@ -91,8 +91,8 @@ blastdb="/work-dir/seq_pep"
 #SO THAT THIS CONTAINER CAN BE USED BOTH IN CLI AND DE I SET KOBASHOME, KOBASDB AND BLASTDB TO THE WORKING-DIR AND THEN PEOPLE CAN OPTIONALLY OVERRIDE IN CLI
 if [[ "$anno" = "true" ]]
 then 
-    gunzip sqlite3/$species'.db.gz'
-    gunzip sqlite3/organism.db.gz
+    test -f sqlite3/$species'.db.gz' && gunzip sqlite3/$species'.db.gz'
+    test -f sqlite3/organism.db.gz && gunzip sqlite3/organism.db.gz
     if [ -n "${coverage}" ]; then ARGS="$ARGS -C $coverage"; fi
     if [ -n "${eval}" ]; then ARGS="$ARGS -e $eval"; fi
     if [ -n "${infile}" ]; then ARGS="$ARGS -i $infile"; fi
@@ -110,7 +110,7 @@ then
     if [ -n "${ortholog}" ]; then ARGS="$ARGS -z $ortholog"; fi
     if [ $intype == 'fasta:pro' ] || [ $intype == 'fasta:nuc' ] 
     then 
-	gunzip seq_pep/$species'.pep.fasta.gz'
+	test -f seq_pep/$species'.pep.fasta.gz' && gunzip seq_pep/$species'.pep.fasta.gz'
     fi
     kobas-annotate -i $infile -t $intype -s $species -o $out -v $blasthome -p $blastp -x $blastx -k $kobashome -q $kobasdb -y $blastdb $ARGS
 fi
@@ -120,8 +120,8 @@ then
     if [ -n "${bgfile}" ]; then ARGS="$ARGS -b $bgfile"; fi
     if [[ $bgfile == "???" ]] || [[ $bgfile == "????" ]]
     then
-        gunzip sqlite3/$bgfile'.db.gz'
-        gunzip sqlite3/organism.db.gz
+        test -f sqlite3/$bgfile'.db.gz' && gunzip sqlite3/$bgfile'.db.gz'
+        test -f sqlite3/organism.db.gz && gunzip sqlite3/organism.db.gz
     fi
     if [ -n "${cutoff}" ]; then ARGS="$ARGS -c $cutoff"; fi
     if [ -n "${databases}" ]; then ARGS="$ARGS -d $databases"; fi
@@ -141,8 +141,9 @@ fi
 
 if [[ "$anno" = "true" ]] && [[ "$ident" = "true" ]]
 then
-    gunzip sqlite3/$species'.db.gz'
-    gunzip sqlite3/organism.db.gz
+    test -f sqlite3/$species'.db.gz' && gunzip sqlite3/$species'.db.gz'
+    test -f sqlite3/organism.db.gz && gunzip sqlite3/organism.db.gz
+
     if [ -n "${coverage}" ]; then ARGS="$ARGS -C $coverage"; fi
     if [ -n "${eval}" ]; then ARGS="$ARGS -e $eval"; fi
     if [ -n "${kobashome}" ]; then ARGS="$ARGS -k $kobashome"; fi #MIGHT WANT TO INCLUDE IN HELP INFO THAT THIS IS THE ABSOLUTE PATH IN THE CONTAINER
@@ -159,13 +160,13 @@ then
     if [ -n "${ortholog}" ]; then ARGS="$ARGS -z $ortholog"; fi
     if [ $intype == 'fasta:pro' ] || [ $intype == 'fasta:nuc' ]
     then
-        gunzip seq_pep/$species'.pep.fasta.gz'
+        test -f seq_pep/$species'.pep.fasta.gz' && gunzip seq_pep/$species'.pep.fasta.gz'
     fi
 
     kobas-annotate -i $infile -t $intype -s $species -o $out -v $blasthome -p $blastp -x $blastx -k $kobashome -q $kobasdb -y $blastdb $ARGS
 
     fgfile=$out
-    unset $ARGS
+    unset ARGS
 
     if [ -n "${cutoff}" ]; then ARGS="$ARGS -c $cutoff"; fi
     if [ -n "${databases}" ]; then ARGS="$ARGS -d $databases"; fi
