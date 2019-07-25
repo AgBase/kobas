@@ -167,13 +167,12 @@ then
     kobas-annotate -i $infile -t $intype -s $species -o $out -v $blasthome -p $blastp -x $blastx -k $kobashome -q $kobasdb -y $blastdb $ARGS
 
     fgfile=$out
-    unset infile
+    infile=""
 
     if [ -n "${cutoff}" ]; then ARGS="$ARGS -c $cutoff"; fi
     if [ -n "${databases}" ]; then ARGS="$ARGS -d $databases"; fi
     if [ -n "${bgfile}" ]; then ARGS="$ARGS -b $bgfile"; fi
     if [ -n "${method}" ]; then ARGS="$ARGS -m $method"; fi
-    if [ -n "${fgfile}" ]; then ARGS="$ARGS -f $fgfile"; fi
 
     kobas-identify -f $fgfile -o $out -v $blasthome -p $blastp -x $blastx -k $kobashome -q $kobasdb -y $blastdb $ARGS
 fi
