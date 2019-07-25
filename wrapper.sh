@@ -16,6 +16,7 @@ do
                 g) ident=true;;
 		h) help=true;;
 		i) infile=${OPTARG};;
+		j) annoident=true;;
 		k) kobashome=${OPTARG};;
 		l) list=${OPTARG};;
                 m) method=${OPTARG};;
@@ -74,7 +75,7 @@ if [[ "$help" = "true" ]] ; then
         [-p BLASTP The path to blastp]
         [-x BLASTX The path to blastx]
  
-    [-ag runs both KOBAS annotate and identify]"
+    [-j runs both KOBAS annotate and identify]"
 fi
 
 
@@ -139,7 +140,7 @@ then
 fi
 
 
-if [[ "$anno" = "true" ]] && [[ "$ident" = "true" ]]
+if [[ "$annoident" = "true" ]]
 then
     test -f sqlite3/$species'.db.gz' && gunzip sqlite3/$species'.db.gz'
     test -f sqlite3/organism.db.gz && gunzip sqlite3/organism.db.gz
@@ -166,7 +167,6 @@ then
     kobas-annotate -i $infile -t $intype -s $species -o $out -v $blasthome -p $blastp -x $blastx -k $kobashome -q $kobasdb -y $blastdb $ARGS
 
     fgfile=$out
-    infile=''
 
     if [ -n "${cutoff}" ]; then ARGS="$ARGS -c $cutoff"; fi
     if [ -n "${databases}" ]; then ARGS="$ARGS -d $databases"; fi
