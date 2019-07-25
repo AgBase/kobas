@@ -144,7 +144,6 @@ then
     test -f sqlite3/$species'.db.gz' && gunzip sqlite3/$species'.db.gz'
     test -f sqlite3/organism.db.gz && gunzip sqlite3/organism.db.gz
 
-    if [ -n "${infile}" ]; then ARGS="$ARGS -i $infile"; fi
     if [ -n "${coverage}" ]; then ARGS="$ARGS -C $coverage"; fi
     if [ -n "${eval}" ]; then ARGS="$ARGS -e $eval"; fi
     if [ -n "${kobashome}" ]; then ARGS="$ARGS -k $kobashome"; fi #MIGHT WANT TO INCLUDE IN HELP INFO THAT THIS IS THE ABSOLUTE PATH IN THE CONTAINER
@@ -167,7 +166,7 @@ then
     kobas-annotate -i $infile -t $intype -s $species -o $out -v $blasthome -p $blastp -x $blastx -k $kobashome -q $kobasdb -y $blastdb $ARGS
 
     fgfile=$out
-    infile=""
+    infile=''
 
     if [ -n "${cutoff}" ]; then ARGS="$ARGS -c $cutoff"; fi
     if [ -n "${databases}" ]; then ARGS="$ARGS -d $databases"; fi
