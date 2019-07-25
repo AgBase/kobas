@@ -34,7 +34,7 @@ do
         esac
 done
 #####################################################################################################
-if [ "$anno" = "true" ]; then
+if [ "$help" = "true" ]; then
   echo "Options:
     [-h prints this help statement]
     [-a runs KOBAS annotate]
