@@ -84,9 +84,9 @@ blasthome="/usr/local/bin/"
 blastp="/usr/local/bin/blastp"
 blastx="/usr/local/bin/blastx"
 #THESE ARE DEFAULTED HERE FOR THE DE APP BUT CAN BE OVERRIDDEN IN OPTIONS FOR CLI
-kobashome="/work-dir/kobas"
-kobasdb="/work-dir/kobas/sqlite3"
-blastdb="/work-dir/kobas/seq_pep"
+kobashome="/work-dir"
+kobasdb="/work-dir/sqlite3"
+blastdb="/work-dir/seq_pep"
 
 #SO THAT THIS CONTAINER CAN BE USED BOTH IN CLI AND DE I SET KOBASHOME, KOBASDB AND BLASTDB TO THE WORKING-DIR AND THEN PEOPLE CAN OPTIONALLY OVERRIDE IN CLI
 if [[ "$anno" = "true" ]]
