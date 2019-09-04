@@ -1,7 +1,7 @@
 #!/bin/bash
 ##SET UP OPTIONS
 
-while getopts ab:c:C:d:e:f:ghi:jk:l:m:n:o:p:q:r:s:S:t:v:x:y:z option
+while getopts ab:c:C:d:e:f:ghi:jk:l:m:n:o:p:q:r:s:S:t:T:v:x:y:z option
 do
         case "${option}"
         in
@@ -28,6 +28,7 @@ do
                 s) species=${OPTARG};;
 		S) inspecies=${OPTARG};;
                 t) intype=${OPTARG};;
+		T) threads=${OPTARG};;
                 v) blasthome=${OPTARG};;
                 x) blastx=${OPTARG};;
                 y) blastdb=${OPTARG};;
@@ -56,6 +57,7 @@ if [[ "$help" = "true" ]] ; then
 	[-q KOBASDB The path to sqlite3/]
 	[-p BLASTP The path to blastp]
 	[-x BLASTX The path to blastx]
+	[-T number of threads to use in BLAST search. Default = 8]
 
     [-g runs KOBAS identify]
 	KOBAS identify options:
@@ -80,15 +82,12 @@ fi
 
 
 ARGS=''
-#THESE WILL ALWAYS BE THE SAME BECAUSE THEY INDICATE WHERE BLAST IS INSTALLED IN THE CONTAINER
-#blasthome="/usr/local/bin/"
-#blastp="/usr/local/bin/blastp"
-#blastx="/usr/local/bin/blastx"
 #THESE ARE DEFAULTED HERE FOR THE DE APP BUT CAN BE OVERRIDDEN IN OPTIONS FOR CLI
 kobashome="/work-dir"
 kobasdb="/work-dir/sqlite3"
 blastdb="/work-dir/seq_pep"
-intype="fasta:pro"
+eval="1e-05"
+threads=8
 
 #SO THAT THIS CONTAINER CAN BE USED BOTH IN CLI AND DE I SET KOBASHOME, KOBASDB AND BLASTDB TO THE WORKING-DIR AND THEN PEOPLE CAN OPTIONALLY OVERRIDE IN CLI
 if [[ "$anno" = "true" ]]
@@ -96,7 +95,7 @@ then
     test -f sqlite3/$species'.db.gz' && gunzip sqlite3/$species'.db.gz'
     test -f sqlite3/organism.db.gz && gunzip sqlite3/organism.db.gz
     if [ -n "${coverage}" ]; then ARGS="$ARGS -C $coverage"; fi
-    if [ -n "${eval}" ]; then ARGS="$ARGS -e $eval"; fi
+#    if [ -n "${eval}" ]; then ARGS="$ARGS -e $eval"; fi
 #    if [ -n "${infile}" ]; then ARGS="$ARGS -i $infile"; fi
     if [ -n "${kobashome}" ]; then ARGS="$ARGS -k $kobashome"; fi #MIGHT WANT TO INCLUDE IN HELP INFO THAT THIS IS THE ABSOLUTE PATH IN THE CONTAINER
     if [ -n "${fdr}" ]; then ARGS="$ARGS -n $fdr"; fi
@@ -105,7 +104,7 @@ then
     if [ -n "${kobasdb}" ]; then ARGS="$ARGS -q $kobasdb"; fi #MIGHT WANT TO INCLUDE IN HELP INFO THAT THIS IS THE ABSOLUTE PATH IN THE CONTAINER
     if [ -n "${rank}" ]; then ARGS="$ARGS -r $rank"; fi
 #    if [ -n "${species}" ]; then ARGS="$ARGS -s $species"; fi    
-    if [ -n "${intype}" ]; then ARGS="$ARGS -t $intype"; fi
+#    if [ -n "${intype}" ]; then ARGS="$ARGS -t $intype"; fi
     if [ -n "${blasthome}" ]; then ARGS="$ARGS -v $blasthome"; fi #MAYBE I SHOULDN'T PROVIDE THIS OPTION IF IT NEVER CHANGES
     if [ -n "${blastx}" ]; then ARGS="$ARGS -x $blastx"; fi #MAYBE I SHOULDN'T PROVIDE THIS OPTION IF IT NEVER CHANGES
     if [ -n "${blastdb}" ]; then ARGS="$ARGS -y $blastdb"; fi
@@ -114,16 +113,16 @@ then
     then 
 	test -f seq_pep/$species'.pep.fasta.gz' && gunzip seq_pep/$species'.pep.fasta.gz'
         makeblastdb -in seq_pep/$species'.pep.fasta'  -parse_seqids -dbtype prot -out seq_pep/$species'.pep.fasta'
-        blastp  -query $infile -db seq_pep/$species'.pep.fasta' -out $species.tsv -outfmt 6
-	kobas-annotate  -i $species.tsv -t blastout:tab -s $species -o $out
-#    elif [[ "$intype" = "fasta:nuc" ]]
-#    then
-#        test -f seq_pep/$species'.pep.fasta.gz' && gunzip seq_pep/$species'.pep.fasta.gz'
-#        makeblastdb -in seq_pep/$species'.pep.fasta'  -parse_seqids -dbtype prot -out $species
-#        blastx -query $infile -db $species -out $species.xml -outfmt 5
-#	 kobas-annotate -i $infile -t blastout:xml -s $species -o $out $ARGS
-#    else
-#        kobas-annotate -i $infile -t $intype  -s $species -o $out -k $kobashome -q $kobasdb -y $blastdb $ARGS
+        blastp -query $infile -db seq_pep/$species'.pep.fasta' -out $species.tsv -outfmt 6 -evalue $eval -num_threads $threads
+	kobas-annotate  -i $species.tsv -t blastout:tab -s $species -o $out $ARGS
+    elif [[ "$intype" = "fasta:nuc" ]]
+    then
+        test -f seq_pep/$species'.pep.fasta.gz' && gunzip seq_pep/$species'.pep.fasta.gz'
+        makeblastdb -in seq_pep/$species'.pep.fasta'  -parse_seqids -dbtype prot -out seq_pep/$species'.pep.fasta'
+        blastx -query $infile -db seq_pep/$species'.pep.fasta' -out $species.tsv -outfmt 6 -evalue $eval -num_threads $threads
+	kobas-annotate -i $species.tsv -t blastout:tab -s $species -o $out $ARGS
+    else
+        kobas-annotate -i $infile -t $intype  -s $species -o $out  $ARGS
     fi
 fi
 
