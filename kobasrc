@@ -1,0 +1,14 @@
+[DEFAULT]
+kobas_home = /work-dir
+blast_home = /usr/local/bin
+
+[KOBAS]
+kobasdb = /work-dir/sqlite3/
+gmt = /work-dir/gmt/
+grn = /work-dir/grn/
+model = /work-dir/model/
+
+[BLAST]
+blastp = /usr/local/bin/blastp
+blastx = /usr/local/bin/blastx
+blastdb = /work-dir/seq_pep/

@@ -1,7 +1,7 @@
 #!/bin/bash
 ##SET UP OPTIONS
 
-while getopts ab:c:C:d:e:f:ghi:jk:l:m:n:o:p:q:r:s:t:v:x:y:z option
+while getopts ab:c:C:d:e:f:ghi:jk:l:m:n:o:p:q:r:s:S:t:v:x:y:z option
 do
         case "${option}"
         in
@@ -81,13 +81,14 @@ fi
 
 ARGS=''
 #THESE WILL ALWAYS BE THE SAME BECAUSE THEY INDICATE WHERE BLAST IS INSTALLED IN THE CONTAINER
-blasthome="/usr/local/bin/"
-blastp="/usr/local/bin/blastp"
-blastx="/usr/local/bin/blastx"
+#blasthome="/usr/local/bin/"
+#blastp="/usr/local/bin/blastp"
+#blastx="/usr/local/bin/blastx"
 #THESE ARE DEFAULTED HERE FOR THE DE APP BUT CAN BE OVERRIDDEN IN OPTIONS FOR CLI
 kobashome="/work-dir"
 kobasdb="/work-dir/sqlite3"
 blastdb="/work-dir/seq_pep"
+intype=fasta:pro
 
 #SO THAT THIS CONTAINER CAN BE USED BOTH IN CLI AND DE I SET KOBASHOME, KOBASDB AND BLASTDB TO THE WORKING-DIR AND THEN PEOPLE CAN OPTIONALLY OVERRIDE IN CLI
 if [[ "$anno" = "true" ]]
@@ -96,30 +97,40 @@ then
     test -f sqlite3/organism.db.gz && gunzip sqlite3/organism.db.gz
     if [ -n "${coverage}" ]; then ARGS="$ARGS -C $coverage"; fi
     if [ -n "${eval}" ]; then ARGS="$ARGS -e $eval"; fi
-    if [ -n "${infile}" ]; then ARGS="$ARGS -i $infile"; fi
+#    if [ -n "${infile}" ]; then ARGS="$ARGS -i $infile"; fi
     if [ -n "${kobashome}" ]; then ARGS="$ARGS -k $kobashome"; fi #MIGHT WANT TO INCLUDE IN HELP INFO THAT THIS IS THE ABSOLUTE PATH IN THE CONTAINER
     if [ -n "${fdr}" ]; then ARGS="$ARGS -n $fdr"; fi
     if [ -n "${out}" ]; then ARGS="$ARGS -o $out"; fi
     if [ -n "${blastp}" ]; then ARGS="$ARGS -p $blastp"; fi #MAYBE I SHOULDN'T PROVIDE THIS OPTION IF IT NEVER CHANGES
     if [ -n "${kobasdb}" ]; then ARGS="$ARGS -q $kobasdb"; fi #MIGHT WANT TO INCLUDE IN HELP INFO THAT THIS IS THE ABSOLUTE PATH IN THE CONTAINER
     if [ -n "${rank}" ]; then ARGS="$ARGS -r $rank"; fi
-    if [ -n "${species}" ]; then ARGS="$ARGS -s $species"; fi    
+#    if [ -n "${species}" ]; then ARGS="$ARGS -s $species"; fi    
     if [ -n "${intype}" ]; then ARGS="$ARGS -t $intype"; fi
     if [ -n "${blasthome}" ]; then ARGS="$ARGS -v $blasthome"; fi #MAYBE I SHOULDN'T PROVIDE THIS OPTION IF IT NEVER CHANGES
     if [ -n "${blastx}" ]; then ARGS="$ARGS -x $blastx"; fi #MAYBE I SHOULDN'T PROVIDE THIS OPTION IF IT NEVER CHANGES
     if [ -n "${blastdb}" ]; then ARGS="$ARGS -y $blastdb"; fi
     if [ -n "${ortholog}" ]; then ARGS="$ARGS -z $ortholog"; fi
-    if [ $intype == 'fasta:pro' ] || [ $intype == 'fasta:nuc' ] 
-    then 
+#    if [[ "$intype" = "fasta:pro" ]] 
+#    then 
 	test -f seq_pep/$species'.pep.fasta.gz' && gunzip seq_pep/$species'.pep.fasta.gz'
-    fi
-    kobas-annotate -i $infile -t $intype -s $species -o $out -v $blasthome -p $blastp -x $blastx -k $kobashome -q $kobasdb -y $blastdb $ARGS
+        makeblastdb -in seq_pep/$species'.pep.fasta'  -parse_seqids -dbtype prot -out seq_pep/$species'.pep.fasta'
+        blastp  -query $infile -db seq_pep/$species'.pep.fasta' -out $species.tsv -outfmt 6
+	kobas-annotate  -i $species.tsv -t blastout:tab -s $species -o $out
+#    elif [[ "$intype" = "fasta:nuc" ]]
+#    then
+#        test -f seq_pep/$species'.pep.fasta.gz' && gunzip seq_pep/$species'.pep.fasta.gz'
+#        makeblastdb -in seq_pep/$species'.pep.fasta'  -parse_seqids -dbtype prot -out $species
+#        blastx -query $infile -db $species -out $species.xml -outfmt 5
+#	 kobas-annotate -i $infile -t blastout:xml -s $species -o $out $ARGS
+#    else
+#        kobas-annotate -i $infile -t $intype  -s $species -o $out -k $kobashome -q $kobasdb -y $blastdb $ARGS
+#    fi
 fi
 
 if [[ "$ident" = "true" ]]
 then
     if [ -n "${bgfile}" ]; then ARGS="$ARGS -b $bgfile"; fi
-    if [[ $bgfile == "???" ]] || [[ $bgfile == "????" ]]
+    if [[ $bgfile = "???" ]] || [[ $bgfile = "????" ]]
     then
         test -f sqlite3/$bgfile'.db.gz' && gunzip sqlite3/$bgfile'.db.gz'
         test -f sqlite3/organism.db.gz && gunzip sqlite3/organism.db.gz
@@ -157,7 +168,7 @@ then
     if [ -n "${blastx}" ]; then ARGS="$ARGS -x $blastx"; fi #MAYBE I SHOULDN'T PROVIDE THIS OPTION IF IT NEVER CHANGES
     if [ -n "${blastdb}" ]; then ARGS="$ARGS -y $blastdb"; fi
     if [ -n "${ortholog}" ]; then ARGS="$ARGS -z $ortholog"; fi
-    if [ $intype == 'fasta:pro' ] || [ $intype == 'fasta:nuc' ]
+    if [ $intype = 'fasta:pro' ] || [ $intype = 'fasta:nuc' ]
     then
         test -f seq_pep/$species'.pep.fasta.gz' && gunzip seq_pep/$species'.pep.fasta.gz'
     fi
