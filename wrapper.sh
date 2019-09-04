@@ -90,41 +90,39 @@ eval="1e-05"
 threads=8
 
 #SO THAT THIS CONTAINER CAN BE USED BOTH IN CLI AND DE I SET KOBASHOME, KOBASDB AND BLASTDB TO THE WORKING-DIR AND THEN PEOPLE CAN OPTIONALLY OVERRIDE IN CLI
-if [[ "$anno" = "true" ]]
-then 
-    test -f sqlite3/$species'.db.gz' && gunzip sqlite3/$species'.db.gz'
-    test -f sqlite3/organism.db.gz && gunzip sqlite3/organism.db.gz
-    if [ -n "${coverage}" ]; then ARGS="$ARGS -C $coverage"; fi
-#    if [ -n "${eval}" ]; then ARGS="$ARGS -e $eval"; fi
-#    if [ -n "${infile}" ]; then ARGS="$ARGS -i $infile"; fi
-    if [ -n "${kobashome}" ]; then ARGS="$ARGS -k $kobashome"; fi #MIGHT WANT TO INCLUDE IN HELP INFO THAT THIS IS THE ABSOLUTE PATH IN THE CONTAINER
-    if [ -n "${fdr}" ]; then ARGS="$ARGS -n $fdr"; fi
-    if [ -n "${out}" ]; then ARGS="$ARGS -o $out"; fi
-    if [ -n "${blastp}" ]; then ARGS="$ARGS -p $blastp"; fi #MAYBE I SHOULDN'T PROVIDE THIS OPTION IF IT NEVER CHANGES
-    if [ -n "${kobasdb}" ]; then ARGS="$ARGS -q $kobasdb"; fi #MIGHT WANT TO INCLUDE IN HELP INFO THAT THIS IS THE ABSOLUTE PATH IN THE CONTAINER
-    if [ -n "${rank}" ]; then ARGS="$ARGS -r $rank"; fi
-#    if [ -n "${species}" ]; then ARGS="$ARGS -s $species"; fi    
-#    if [ -n "${intype}" ]; then ARGS="$ARGS -t $intype"; fi
-    if [ -n "${blasthome}" ]; then ARGS="$ARGS -v $blasthome"; fi #MAYBE I SHOULDN'T PROVIDE THIS OPTION IF IT NEVER CHANGES
-    if [ -n "${blastx}" ]; then ARGS="$ARGS -x $blastx"; fi #MAYBE I SHOULDN'T PROVIDE THIS OPTION IF IT NEVER CHANGES
-    if [ -n "${blastdb}" ]; then ARGS="$ARGS -y $blastdb"; fi
-    if [ -n "${ortholog}" ]; then ARGS="$ARGS -z $ortholog"; fi
-    if [[ "$intype" = "fasta:pro" ]] 
-    then 
-	test -f seq_pep/$species'.pep.fasta.gz' && gunzip seq_pep/$species'.pep.fasta.gz'
-        makeblastdb -in seq_pep/$species'.pep.fasta'  -parse_seqids -dbtype prot -out seq_pep/$species'.pep.fasta'
-        blastp -query $infile -db seq_pep/$species'.pep.fasta' -out $species.tsv -outfmt 6 -evalue $eval -num_threads $threads
-	kobas-annotate  -i $species.tsv -t blastout:tab -s $species -o $out $ARGS
-    elif [[ "$intype" = "fasta:nuc" ]]
-    then
-        test -f seq_pep/$species'.pep.fasta.gz' && gunzip seq_pep/$species'.pep.fasta.gz'
-        makeblastdb -in seq_pep/$species'.pep.fasta'  -parse_seqids -dbtype prot -out seq_pep/$species'.pep.fasta'
-        blastx -query $infile -db seq_pep/$species'.pep.fasta' -out $species.tsv -outfmt 6 -evalue $eval -num_threads $threads
-	kobas-annotate -i $species.tsv -t blastout:tab -s $species -o $out $ARGS
-    else
-        kobas-annotate -i $infile -t $intype  -s $species -o $out  $ARGS
-    fi
-fi
+#if [[ "$anno" = "true" ]]
+#then 
+#    test -f sqlite3/$species'.db.gz' && gunzip sqlite3/$species'.db.gz'
+#    test -f sqlite3/organism.db.gz && gunzip sqlite3/organism.db.gz
+#    if [ -n "${coverage}" ]; then ARGS="$ARGS -C $coverage"; fi
+#    if [ -n "${kobashome}" ]; then ARGS="$ARGS -k $kobashome"; fi #MIGHT WANT TO INCLUDE IN HELP INFO THAT THIS IS THE ABSOLUTE PATH IN THE CONTAINER
+#    if [ -n "${fdr}" ]; then ARGS="$ARGS -n $fdr"; fi
+#    if [ -n "${out}" ]; then ARGS="$ARGS -o $out"; fi
+#    if [ -n "${blastp}" ]; then ARGS="$ARGS -p $blastp"; fi #MAYBE I SHOULDN'T PROVIDE THIS OPTION IF IT NEVER CHANGES
+#    if [ -n "${kobasdb}" ]; then ARGS="$ARGS -q $kobasdb"; fi #MIGHT WANT TO INCLUDE IN HELP INFO THAT THIS IS THE ABSOLUTE PATH IN THE CONTAINER
+#    if [ -n "${rank}" ]; then ARGS="$ARGS -r $rank"; fi
+#    if [ -n "${blasthome}" ]; then ARGS="$ARGS -v $blasthome"; fi #MAYBE I SHOULDN'T PROVIDE THIS OPTION IF IT NEVER CHANGES
+#    if [ -n "${blastx}" ]; then ARGS="$ARGS -x $blastx"; fi #MAYBE I SHOULDN'T PROVIDE THIS OPTION IF IT NEVER CHANGES
+#    if [ -n "${blastdb}" ]; then ARGS="$ARGS -y $blastdb"; fi
+#    if [ -n "${ortholog}" ]; then ARGS="$ARGS -z $ortholog"; fi
+#    if [[ "$intype" = "fasta:pro" ]] 
+#    then 
+#	test -f seq_pep/$species'.pep.fasta.gz' && gunzip seq_pep/$species'.pep.fasta.gz'
+#        makeblastdb -in seq_pep/$species'.pep.fasta'  -parse_seqids -dbtype prot -out seq_pep/$species'.pep.fasta'
+#        blastp -query $infile -db seq_pep/$species'.pep.fasta' -out $species.tsv -outfmt 6 -evalue $eval -num_threads $threads
+#	kobas-annotate  -i $species.tsv -t blastout:tab -s $species -o $out $ARGS
+#    elif [[ "$intype" = "fasta:nuc" ]]
+#    then
+#        test -f seq_pep/$species'.pep.fasta.gz' && gunzip seq_pep/$species'.pep.fasta.gz'
+#        makeblastdb -in seq_pep/$species'.pep.fasta'  -parse_seqids -dbtype prot -out seq_pep/$species'.pep.fasta'
+#        blastx -query $infile -db seq_pep/$species'.pep.fasta' -out $species.tsv -outfmt 6 -evalue $eval -num_threads $threads
+#	kobas-annotate -i $species.tsv -t blastout:tab -s $species -o $out $ARGS
+#    else
+#        kobas-annotate -i $infile -t $intype  -s $species -o $out  $ARGS
+#    fi
+#fi
+#EVERYTHING UP TO THIS POINT WORKS WITH NOTHING COMMENTED OUT
+#==========================================================================================================================================================================
 
 if [[ "$ident" = "true" ]]
 then
@@ -134,52 +132,61 @@ then
         test -f sqlite3/$bgfile'.db.gz' && gunzip sqlite3/$bgfile'.db.gz'
         test -f sqlite3/organism.db.gz && gunzip sqlite3/organism.db.gz
     fi
-    if [ -n "${cutoff}" ]; then ARGS="$ARGS -c $cutoff"; fi
-    if [ -n "${databases}" ]; then ARGS="$ARGS -d $databases"; fi
-    if [ -n "${fgfile}" ]; then ARGS="$ARGS -f $fgfile"; fi
-    if [ -n "${kobashome}" ]; then ARGS="$ARGS -k $kobashome"; fi #MIGHT WANT TO INCLUDE IN HELP INFO THAT THIS IS THE ABSOLUTE PATH IN THE CONTAINER
-    if [ -n "${method}" ]; then ARGS="$ARGS -m $method"; fi
-    if [ -n "${fdr}" ]; then ARGS="$ARGS -n $fdr"; fi
-    if [ -n "${out}" ]; then ARGS="$ARGS -o $out"; fi
-    if [ -n "${blastp}" ]; then ARGS="$ARGS -p $blastp"; fi #MAYBE I SHOULDN'T PROVIDE THIS OPTION IF IT NEVER CHANGES
-    if [ -n "${kobasdb}" ]; then ARGS="$ARGS -q $kobasdb"; fi #MIGHT WANT TO INCLUDE IN HELP INFO THAT THIS IS THE ABSOLUTE PATH IN THE CONTAINER
-    if [ -n "${blasthome}" ]; then ARGS="$ARGS -v $blasthome"; fi #MAYBE I SHOULDN'T PROVIDE THIS OPTION IF IT NEVER CHANGES
-    if [ -n "${blastx}" ]; then ARGS="$ARGS -x $blastx"; fi #MAYBE I SHOULDN'T PROVIDE THIS OPTION IF IT NEVER CHANGES
-    if [ -n "${blastdb}" ]; then ARGS="$ARGS -y $blastdb"; fi
-    kobas-identify -f $fgfile -o $out -v $blasthome -p $blastp -x $blastx -k $kobashome -q $kobasdb -y $blastdb $ARGS
+#    if [ -n "${cutoff}" ]; then ARGS="$ARGS -c $cutoff"; fi
+#    if [ -n "${databases}" ]; then ARGS="$ARGS -d $databases"; fi
+#    if [ -n "${fgfile}" ]; then ARGS="$ARGS -f $fgfile"; fi
+#    if [ -n "${kobashome}" ]; then ARGS="$ARGS -k $kobashome"; fi #MIGHT WANT TO INCLUDE IN HELP INFO THAT THIS IS THE ABSOLUTE PATH IN THE CONTAINER
+#    if [ -n "${method}" ]; then ARGS="$ARGS -m $method"; fi
+#    if [ -n "${fdr}" ]; then ARGS="$ARGS -n $fdr"; fi
+#    if [ -n "${out}" ]; then ARGS="$ARGS -o $out"; fi
+#    if [ -n "${blastp}" ]; then ARGS="$ARGS -p $blastp"; fi #MAYBE I SHOULDN'T PROVIDE THIS OPTION IF IT NEVER CHANGES
+#    if [ -n "${kobasdb}" ]; then ARGS="$ARGS -q $kobasdb"; fi #MIGHT WANT TO INCLUDE IN HELP INFO THAT THIS IS THE ABSOLUTE PATH IN THE CONTAINER
+#    if [ -n "${blasthome}" ]; then ARGS="$ARGS -v $blasthome"; fi #MAYBE I SHOULDN'T PROVIDE THIS OPTION IF IT NEVER CHANGES
+#    if [ -n "${blastx}" ]; then ARGS="$ARGS -x $blastx"; fi #MAYBE I SHOULDN'T PROVIDE THIS OPTION IF IT NEVER CHANGES
+#    if [ -n "${blastdb}" ]; then ARGS="$ARGS -y $blastdb"; fi
+     kobas-identify -f $fgfile -b $bgfile -o $out $ARGS
 fi
 
 
-if [[ "$annoident" = "true" ]]
-then
-    test -f sqlite3/$species'.db.gz' && gunzip sqlite3/$species'.db.gz'
-    test -f sqlite3/organism.db.gz && gunzip sqlite3/organism.db.gz
+#if [[ "$annoident" = "true" ]]
+#then
+#    test -f sqlite3/$species'.db.gz' && gunzip sqlite3/$species'.db.gz'
+#    test -f sqlite3/organism.db.gz && gunzip sqlite3/organism.db.gz
 
-    if [ -n "${coverage}" ]; then ARGS="$ARGS -C $coverage"; fi
-    if [ -n "${eval}" ]; then ARGS="$ARGS -e $eval"; fi
-    if [ -n "${kobashome}" ]; then ARGS="$ARGS -k $kobashome"; fi #MIGHT WANT TO INCLUDE IN HELP INFO THAT THIS IS THE ABSOLUTE PATH IN THE CONTAINER
-    if [ -n "${fdr}" ]; then ARGS="$ARGS -n $fdr"; fi
-    if [ -n "${out}" ]; then ARGS="$ARGS -o $out"; fi
-    if [ -n "${blastp}" ]; then ARGS="$ARGS -p $blastp"; fi #MAYBE I SHOULDN'T PROVIDE THIS OPTION IF IT NEVER CHANGES
-    if [ -n "${kobasdb}" ]; then ARGS="$ARGS -q $kobasdb"; fi #MIGHT WANT TO INCLUDE IN HELP INFO THAT THIS IS THE ABSOLUTE PATH IN THE CONTAINER
-    if [ -n "${rank}" ]; then ARGS="$ARGS -r $rank"; fi
-    if [ -n "${blasthome}" ]; then ARGS="$ARGS -v $blasthome"; fi #MAYBE I SHOULDN'T PROVIDE THIS OPTION IF IT NEVER CHANGES
-    if [ -n "${blastx}" ]; then ARGS="$ARGS -x $blastx"; fi #MAYBE I SHOULDN'T PROVIDE THIS OPTION IF IT NEVER CHANGES
-    if [ -n "${blastdb}" ]; then ARGS="$ARGS -y $blastdb"; fi
-    if [ -n "${ortholog}" ]; then ARGS="$ARGS -z $ortholog"; fi
-    if [ $intype = 'fasta:pro' ] || [ $intype = 'fasta:nuc' ]
-    then
-        test -f seq_pep/$species'.pep.fasta.gz' && gunzip seq_pep/$species'.pep.fasta.gz'
-    fi
+#    if [ -n "${coverage}" ]; then ARGS="$ARGS -C $coverage"; fi
+#    if [ -n "${eval}" ]; then ARGS="$ARGS -e $eval"; fi
+#    if [ -n "${kobashome}" ]; then ARGS="$ARGS -k $kobashome"; fi #MIGHT WANT TO INCLUDE IN HELP INFO THAT THIS IS THE ABSOLUTE PATH IN THE CONTAINER
+#    if [ -n "${fdr}" ]; then ARGS="$ARGS -n $fdr"; fi
+#    if [ -n "${out}" ]; then ARGS="$ARGS -o $out"; fi
+#    if [ -n "${blastp}" ]; then ARGS="$ARGS -p $blastp"; fi #MAYBE I SHOULDN'T PROVIDE THIS OPTION IF IT NEVER CHANGES
+#    if [ -n "${kobasdb}" ]; then ARGS="$ARGS -q $kobasdb"; fi #MIGHT WANT TO INCLUDE IN HELP INFO THAT THIS IS THE ABSOLUTE PATH IN THE CONTAINER
+#    if [ -n "${rank}" ]; then ARGS="$ARGS -r $rank"; fi
+#    if [ -n "${blasthome}" ]; then ARGS="$ARGS -v $blasthome"; fi #MAYBE I SHOULDN'T PROVIDE THIS OPTION IF IT NEVER CHANGES
+#    if [ -n "${blastx}" ]; then ARGS="$ARGS -x $blastx"; fi #MAYBE I SHOULDN'T PROVIDE THIS OPTION IF IT NEVER CHANGES
+#    if [ -n "${blastdb}" ]; then ARGS="$ARGS -y $blastdb"; fi
+#    if [ -n "${ortholog}" ]; then ARGS="$ARGS -z $ortholog"; fi
+#    if [[ "$intype" = "fasta:pro" ]]
+#    then
+#        test -f seq_pep/$species'.pep.fasta.gz' && gunzip seq_pep/$species'.pep.fasta.gz'
+#        makeblastdb -in seq_pep/$species'.pep.fasta'  -parse_seqids -dbtype prot -out seq_pep/$species'.pep.fasta'
+#        blastp -query $infile -db seq_pep/$species'.pep.fasta' -out $species.tsv -outfmt 6 -evalue $eval -num_threads $threads
+#        kobas-annotate  -i $species.tsv -t blastout:tab -s $species -o $out $ARGS
+#    elif [[ "$intype" = "fasta:nuc" ]]
+#    then
+#        test -f seq_pep/$species'.pep.fasta.gz' && gunzip seq_pep/$species'.pep.fasta.gz'
+#        makeblastdb -in seq_pep/$species'.pep.fasta'  -parse_seqids -dbtype prot -out seq_pep/$species'.pep.fasta'
+#        blastx -query $infile -db seq_pep/$species'.pep.fasta' -out $species.tsv -outfmt 6 -evalue $eval -num_threads $threads
+#        kobas-annotate -i $species.tsv -t blastout:tab -s $species -o $out $ARGS
+#    else
+#        kobas-annotate -i $infile -t $intype  -s $species -o $out  $ARGS
+#    fi
 
-    kobas-annotate -i $infile -t $intype -s $species -o $out -v $blasthome -p $blastp -x $blastx -k $kobashome -q $kobasdb -y $blastdb $ARGS
+#    fgfile=$out
 
-    fgfile=$out
+#    if [ -n "${cutoff}" ]; then ARGS="$ARGS -c $cutoff"; fi
+#    if [ -n "${databases}" ]; then ARGS="$ARGS -d $databases"; fi
+#    if [ -n "${bgfile}" ]; then ARGS="$ARGS -b $bgfile"; fi
+#    if [ -n "${method}" ]; then ARGS="$ARGS -m $method"; fi
 
-    if [ -n "${cutoff}" ]; then ARGS="$ARGS -c $cutoff"; fi
-    if [ -n "${databases}" ]; then ARGS="$ARGS -d $databases"; fi
-    if [ -n "${bgfile}" ]; then ARGS="$ARGS -b $bgfile"; fi
-    if [ -n "${method}" ]; then ARGS="$ARGS -m $method"; fi
-
-    kobas-identify -f $fgfile -o $out -v $blasthome -p $blastp -x $blastx -k $kobashome -q $kobasdb -y $blastdb $ARGS
-fi
+#    kobas-identify -f $fgfile -o $out $ARGS
+#fi
