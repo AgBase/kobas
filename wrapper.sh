@@ -88,7 +88,7 @@ ARGS=''
 kobashome="/work-dir"
 kobasdb="/work-dir/sqlite3"
 blastdb="/work-dir/seq_pep"
-intype=fasta:pro
+intype="fasta:pro"
 
 #SO THAT THIS CONTAINER CAN BE USED BOTH IN CLI AND DE I SET KOBASHOME, KOBASDB AND BLASTDB TO THE WORKING-DIR AND THEN PEOPLE CAN OPTIONALLY OVERRIDE IN CLI
 if [[ "$anno" = "true" ]]
@@ -110,8 +110,8 @@ then
     if [ -n "${blastx}" ]; then ARGS="$ARGS -x $blastx"; fi #MAYBE I SHOULDN'T PROVIDE THIS OPTION IF IT NEVER CHANGES
     if [ -n "${blastdb}" ]; then ARGS="$ARGS -y $blastdb"; fi
     if [ -n "${ortholog}" ]; then ARGS="$ARGS -z $ortholog"; fi
-#    if [[ "$intype" = "fasta:pro" ]] 
-#    then 
+    if [[ "$intype" = "fasta:pro" ]] 
+    then 
 	test -f seq_pep/$species'.pep.fasta.gz' && gunzip seq_pep/$species'.pep.fasta.gz'
         makeblastdb -in seq_pep/$species'.pep.fasta'  -parse_seqids -dbtype prot -out seq_pep/$species'.pep.fasta'
         blastp  -query $infile -db seq_pep/$species'.pep.fasta' -out $species.tsv -outfmt 6
@@ -124,7 +124,7 @@ then
 #	 kobas-annotate -i $infile -t blastout:xml -s $species -o $out $ARGS
 #    else
 #        kobas-annotate -i $infile -t $intype  -s $species -o $out -k $kobashome -q $kobasdb -y $blastdb $ARGS
-#    fi
+    fi
 fi
 
 if [[ "$ident" = "true" ]]
