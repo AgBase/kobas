@@ -39,43 +39,44 @@ done
 if [[ "$help" = "true" ]] ; then
   echo "Options:
     [-h prints this help statement]
+
     [-a runs KOBAS annotate]
     KOBAS annotate options:
-	-i infile (can be FASTA or one-per-lineidentifiers. See -t intype for details.
-	-s species (3 or 4 letter species abbreviation. Can be found here: ftp://ftp.cbi.pku.edu.cn/pub/KOBAS_3.0_DOWNLOAD/species_abbr.txt)
-    	[-l list available species, or list available databases for a specific species]
+	-i INFILE (can be FASTA or one-per-lineidentifiers. See -t intype for details.
+	-s SPECIES (3 or 4 letter species abbreviation. Can be found here: ftp://ftp.cbi.pku.edu.cn/pub/KOBAS_3.0_DOWNLOAD/species_abbr.txt)
+	-o OUTPUT file (Default is stdout.)
+    	[-l LIST available species, or list available databases for a specific species]
 	[-t INTYPE (fasta:pro, fasta:nuc, blastout:xml, blastout:tab, id:ncbigi, id:uniprot, id:ensembl, id:ncbigene), default fasta:pro]
-	[-o OUTPUT file (Default is stdout.)]
 	[-e EVALUE expect threshold for BLAST, default 1e-5]
 	[-r RANK rank cutoff for valid hits from BLAST result, default is 5]
 	[-n NCPUS number of CPUs to be used by BLAST, default 1]
 	[-C COVERAGE subject coverage cutoff for BLAST, default 0]
 	[-z ORTHOLOG whether only use orthologs for cross-species annotation or not, default NO (if only using orthologs, please provide the species abbreviation of your input)]
-	[-k KOBAS HOME The path to kobas_home, which is the parent directory of sqlite3/ and seq_pep/]
-	[-v BLAST HOME The path to blast_home, which is the parent directory of blastx and blastp.]
-	[-y BLASTDB The path to seq_pep/]
-	[-q KOBASDB The path to sqlite3/]
-	[-p BLASTP The path to blastp]
-	[-x BLASTX The path to blastx]
-	[-T number of threads to use in BLAST search. Default = 8]
+	[-k KOBAS HOME The path to kobas_home, which is the parent directory of sqlite3/ and seq_pep/. This is the absolute path in the container.]
+	[-v BLAST HOME The path to blast_home, which is the parent directory of blastx and blastp. This is the absolute path in the container.]
+	[-y BLASTDB The path to seq_pep/. This is the absolute path in the container.]
+	[-q KOBASDB The path to sqlite3/, This is the absolute path in the container.]
+	[-p BLASTP The path to blastp. This is the absolute path in the container.]
+	[-x BLASTX The path to blastx. This is the absolute path in the container.]
+	[-T number of THREADS to use in BLAST search. Default = 8]
 
     [-g runs KOBAS identify]
 	KOBAS identify options:
 	-f FGFILE foreground file, the output of annotate
-	[-b BGFILE background file, the output of annotate (3 or 4-letter file name is not allowed), or species abbreviation, default same species as annotate]
+	-b BGFILE background file, the output of annotate (3 or 4-letter file name is not allowed), or species abbreviation, default same species as annotate]
+        -o OUTPUT file (Default is stdout.)
 	[-d DB databases for selection, 1-letter abbreviation separated by "/": K for KEGG PATHWAY, n for PID, b for BioCarta, R for Reactome, B for BioCyc, p for PANTHER,
                o for OMIM, k for KEGG DISEASE, f for FunDO, g for GAD, N for NHGRI GWAS Catalog and G for Gene Ontology, default K/n/b/R/B/p/o/k/f/g/N/]
 	[-m METHOD choose statistical test method: b for binomial test, c for chi-square test, h for hypergeometric test / Fisher's exact test, and x for frequency list, 
-		   default hypergeometric test / Fisher's exact test
+	       default hypergeometric test / Fisher's exact test
 	[-n FDR choose false discovery rate (FDR) correction method: BH for Benjamini and Hochberg, BY for Benjamini and Yekutieli, QVALUE, and None, default BH
-        [-o OUTPUT file (Default is stdout.)]
         [-c CUTOFF terms with less than cutoff number of genes are not used for statistical tests, default 5]
-        [-k KOBAS HOME The path to kobas_home, which is the parent directory of sqlite3/ and seq_pep/]
-        [-v BLAST HOME The path to blast_home, which is the parent directory of blastx and blastp.]
-        [-y BLASTDB The path to seq_pep/]
-        [-q KOBASDB The path to sqlite3/]
-        [-p BLASTP The path to blastp]
-        [-x BLASTX The path to blastx]
+        [-k KOBAS HOME The path to kobas_home, which is the parent directory of sqlite3/ and seq_pep/. This is the absolute path in the container.]
+        [-v BLAST HOME The path to blast_home, which is the parent directory of blastx and blastp. This is the absolute path in the container.]
+        [-y BLASTDB The path to seq_pep/. This is the absolute path in the container.]
+        [-q KOBASDB The path to sqlite3/. This is the absolute path in the container.]
+        [-p BLASTP The path to blastp. This is the absolute path in the container.]
+        [-x BLASTX The path to blastx. This is the absolute path in the container.]
  
     [-j runs both KOBAS annotate and identify]"
 fi
@@ -92,28 +93,30 @@ threads=8
 #SO THAT THIS CONTAINER CAN BE USED BOTH IN CLI AND DE I SET KOBASHOME, KOBASDB AND BLASTDB TO THE WORKING-DIR AND THEN PEOPLE CAN OPTIONALLY OVERRIDE IN CLI
 if [[ "$anno" = "true" ]]
 then 
+    test -f sqlite3.tar && tar -xf sqlite3.tar
     test -f sqlite3/$species'.db.gz' && gunzip sqlite3/$species'.db.gz'
     test -f sqlite3/organism.db.gz && gunzip sqlite3/organism.db.gz
     if [ -n "${coverage}" ]; then ARGS="$ARGS -C $coverage"; fi
-    if [ -n "${kobashome}" ]; then ARGS="$ARGS -k $kobashome"; fi #MIGHT WANT TO INCLUDE IN HELP INFO THAT THIS IS THE ABSOLUTE PATH IN THE CONTAINER
+    if [ -n "${kobashome}" ]; then ARGS="$ARGS -k $kobashome"; fi 
     if [ -n "${fdr}" ]; then ARGS="$ARGS -n $fdr"; fi
-    if [ -n "${out}" ]; then ARGS="$ARGS -o $out"; fi
-    if [ -n "${blastp}" ]; then ARGS="$ARGS -p $blastp"; fi #MAYBE I SHOULDN'T PROVIDE THIS OPTION IF IT NEVER CHANGES
-    if [ -n "${kobasdb}" ]; then ARGS="$ARGS -q $kobasdb"; fi #MIGHT WANT TO INCLUDE IN HELP INFO THAT THIS IS THE ABSOLUTE PATH IN THE CONTAINER
+    if [ -n "${blastp}" ]; then ARGS="$ARGS -p $blastp"; fi 
+    if [ -n "${kobasdb}" ]; then ARGS="$ARGS -q $kobasdb"; fi 
     if [ -n "${rank}" ]; then ARGS="$ARGS -r $rank"; fi
-    if [ -n "${blasthome}" ]; then ARGS="$ARGS -v $blasthome"; fi #MAYBE I SHOULDN'T PROVIDE THIS OPTION IF IT NEVER CHANGES
-    if [ -n "${blastx}" ]; then ARGS="$ARGS -x $blastx"; fi #MAYBE I SHOULDN'T PROVIDE THIS OPTION IF IT NEVER CHANGES
+    if [ -n "${blasthome}" ]; then ARGS="$ARGS -v $blasthome"; fi 
+    if [ -n "${blastx}" ]; then ARGS="$ARGS -x $blastx"; fi 
     if [ -n "${blastdb}" ]; then ARGS="$ARGS -y $blastdb"; fi
     if [ -n "${ortholog}" ]; then ARGS="$ARGS -z $ortholog"; fi
     if [[ "$intype" = "fasta:pro" ]] 
     then 
+	test -f seq_pep.tar && tar -xf seq_pep.tar
 	test -f seq_pep/$species'.pep.fasta.gz' && gunzip seq_pep/$species'.pep.fasta.gz'
         makeblastdb -in seq_pep/$species'.pep.fasta'  -parse_seqids -dbtype prot -out seq_pep/$species'.pep.fasta'
         blastp -query $infile -db seq_pep/$species'.pep.fasta' -out $species.tsv -outfmt 6 -evalue $eval -num_threads $threads
 	kobas-annotate  -i $species.tsv -t blastout:tab -s $species -o $out $ARGS
     elif [[ "$intype" = "fasta:nuc" ]]
     then
-        test -f seq_pep/$species'.pep.fasta.gz' && gunzip seq_pep/$species'.pep.fasta.gz'
+        test -f seq_pep.tar && tar -xf seq_pep.tar
+	test -f seq_pep/$species'.pep.fasta.gz' && gunzip seq_pep/$species'.pep.fasta.gz'
         makeblastdb -in seq_pep/$species'.pep.fasta'  -parse_seqids -dbtype prot -out seq_pep/$species'.pep.fasta'
         blastx -query $infile -db seq_pep/$species'.pep.fasta' -out $species.tsv -outfmt 6 -evalue $eval -num_threads $threads
 	kobas-annotate -i $species.tsv -t blastout:tab -s $species -o $out $ARGS
@@ -126,18 +129,19 @@ if [[ "$ident" = "true" ]]
 then
     if [[ $bgfile = "???" ]] || [[ $bgfile = "????" ]]
     then
+	test -f sqlite3.tar && tar -xf sqlite3.tar
         test -f sqlite3/$bgfile'.db.gz' && gunzip sqlite3/$bgfile'.db.gz'
         test -f sqlite3/organism.db.gz && gunzip sqlite3/organism.db.gz
     fi
     if [ -n "${cutoff}" ]; then ARGS="$ARGS -c $cutoff"; fi
     if [ -n "${databases}" ]; then ARGS="$ARGS -d $databases"; fi
-    if [ -n "${kobashome}" ]; then ARGS="$ARGS -k $kobashome"; fi #MIGHT WANT TO INCLUDE IN HELP INFO THAT THIS IS THE ABSOLUTE PATH IN THE CONTAINER
+    if [ -n "${kobashome}" ]; then ARGS="$ARGS -k $kobashome"; fi
     if [ -n "${method}" ]; then ARGS="$ARGS -m $method"; fi
     if [ -n "${fdr}" ]; then ARGS="$ARGS -n $fdr"; fi
-    if [ -n "${blastp}" ]; then ARGS="$ARGS -p $blastp"; fi #MAYBE I SHOULDN'T PROVIDE THIS OPTION IF IT NEVER CHANGES
-    if [ -n "${kobasdb}" ]; then ARGS="$ARGS -q $kobasdb"; fi #MIGHT WANT TO INCLUDE IN HELP INFO THAT THIS IS THE ABSOLUTE PATH IN THE CONTAINER
-    if [ -n "${blasthome}" ]; then ARGS="$ARGS -v $blasthome"; fi #MAYBE I SHOULDN'T PROVIDE THIS OPTION IF IT NEVER CHANGES
-    if [ -n "${blastx}" ]; then ARGS="$ARGS -x $blastx"; fi #MAYBE I SHOULDN'T PROVIDE THIS OPTION IF IT NEVER CHANGES
+    if [ -n "${blastp}" ]; then ARGS="$ARGS -p $blastp"; fi
+    if [ -n "${kobasdb}" ]; then ARGS="$ARGS -q $kobasdb"; fi
+    if [ -n "${blasthome}" ]; then ARGS="$ARGS -v $blasthome"; fi
+    if [ -n "${blastx}" ]; then ARGS="$ARGS -x $blastx"; fi 
     if [ -n "${blastdb}" ]; then ARGS="$ARGS -y $blastdb"; fi
 
      kobas-identify -f $fgfile -b $bgfile -o $out $ARGS
@@ -146,29 +150,32 @@ fi
 
 if [[ "$annoident" = "true" ]]
 then
+    test -f sqlite3.tar && tar -xf sqlite3.tar
     test -f sqlite3/$species'.db.gz' && gunzip sqlite3/$species'.db.gz'
     test -f sqlite3/organism.db.gz && gunzip sqlite3/organism.db.gz
 
     if [ -n "${coverage}" ]; then ARGS="$ARGS -C $coverage"; fi
     if [ -n "${eval}" ]; then ARGS="$ARGS -e $eval"; fi
-    if [ -n "${kobashome}" ]; then ARGS="$ARGS -k $kobashome"; fi #MIGHT WANT TO INCLUDE IN HELP INFO THAT THIS IS THE ABSOLUTE PATH IN THE CONTAINER
+    if [ -n "${kobashome}" ]; then ARGS="$ARGS -k $kobashome"; fi
     if [ -n "${fdr}" ]; then ARGS="$ARGS -n $fdr"; fi
     if [ -n "${out}" ]; then ARGS="$ARGS -o $out"; fi
-    if [ -n "${blastp}" ]; then ARGS="$ARGS -p $blastp"; fi #MAYBE I SHOULDN'T PROVIDE THIS OPTION IF IT NEVER CHANGES
-    if [ -n "${kobasdb}" ]; then ARGS="$ARGS -q $kobasdb"; fi #MIGHT WANT TO INCLUDE IN HELP INFO THAT THIS IS THE ABSOLUTE PATH IN THE CONTAINER
+    if [ -n "${blastp}" ]; then ARGS="$ARGS -p $blastp"; fi
+    if [ -n "${kobasdb}" ]; then ARGS="$ARGS -q $kobasdb"; fi
     if [ -n "${rank}" ]; then ARGS="$ARGS -r $rank"; fi
-    if [ -n "${blasthome}" ]; then ARGS="$ARGS -v $blasthome"; fi #MAYBE I SHOULDN'T PROVIDE THIS OPTION IF IT NEVER CHANGES
-    if [ -n "${blastx}" ]; then ARGS="$ARGS -x $blastx"; fi #MAYBE I SHOULDN'T PROVIDE THIS OPTION IF IT NEVER CHANGES
+    if [ -n "${blasthome}" ]; then ARGS="$ARGS -v $blasthome"; fi
+    if [ -n "${blastx}" ]; then ARGS="$ARGS -x $blastx"; fi
     if [ -n "${blastdb}" ]; then ARGS="$ARGS -y $blastdb"; fi
     if [ -n "${ortholog}" ]; then ARGS="$ARGS -z $ortholog"; fi
     if [[ "$intype" = "fasta:pro" ]]
     then
+	test -f seq_pep.tar && tar -xf seq_pep.tar
         test -f seq_pep/$species'.pep.fasta.gz' && gunzip seq_pep/$species'.pep.fasta.gz'
         makeblastdb -in seq_pep/$species'.pep.fasta'  -parse_seqids -dbtype prot -out seq_pep/$species'.pep.fasta'
         blastp -query $infile -db seq_pep/$species'.pep.fasta' -out $species.tsv -outfmt 6 -evalue $eval -num_threads $threads
         kobas-annotate  -i $species.tsv -t blastout:tab -s $species -o $out $ARGS
     elif [[ "$intype" = "fasta:nuc" ]]
     then
+	test -f seq_pep.tar && tar -xf seq_pep.tar
         test -f seq_pep/$species'.pep.fasta.gz' && gunzip seq_pep/$species'.pep.fasta.gz'
         makeblastdb -in seq_pep/$species'.pep.fasta'  -parse_seqids -dbtype prot -out seq_pep/$species'.pep.fasta'
         blastx -query $infile -db seq_pep/$species'.pep.fasta' -out $species.tsv -outfmt 6 -evalue $eval -num_threads $threads
@@ -184,6 +191,12 @@ then
     if [ -n "${databases}" ]; then ARGS="$ARGS -d $databases"; fi
     if [ -n "${bgfile}" ]; then ARGS="$ARGS -b $bgfile"; fi
     if [ -n "${method}" ]; then ARGS="$ARGS -m $method"; fi
+    if [ -n "${kobashome}" ]; then ARGS="$ARGS -k $kobashome"; fi
+    if [ -n "${blastp}" ]; then ARGS="$ARGS -p $blastp"; fi
+    if [ -n "${kobasdb}" ]; then ARGS="$ARGS -q $kobasdb"; fi
+    if [ -n "${blasthome}" ]; then ARGS="$ARGS -v $blasthome"; fi
+    if [ -n "${blastx}" ]; then ARGS="$ARGS -x $blastx"; fi
+    if [ -n "${blastdb}" ]; then ARGS="$ARGS -y $blastdb"; fi
 
     kobas-identify -f $fgfile -o $out $ARGS
 fi

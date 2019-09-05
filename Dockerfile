@@ -3,11 +3,6 @@ FROM quay.io/biocontainers/kobas:3.0.3--py27_1
 MAINTAINER Amanda Cooksey
 LABEL Description="kobas_wrapper"
 
-#USER root
-
-# Install all the updates and download dependencies
-#RUN apt-get update && apt-get install -y git
-
 # ADD the wrapper script
 ADD wrapper.sh /usr/bin
 ADD kobasrc /etc
