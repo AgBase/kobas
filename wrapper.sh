@@ -121,29 +121,25 @@ then
         kobas-annotate -i $infile -t $intype  -s $species -o $out  $ARGS
     fi
 fi
-#EVERYTHING UP TO THIS POINT WORKS WITH NOTHING COMMENTED OUT
-#==========================================================================================================================================================================
 
 if [[ "$ident" = "true" ]]
 then
-    if [ -n "${bgfile}" ]; then ARGS="$ARGS -b $bgfile"; fi
     if [[ $bgfile = "???" ]] || [[ $bgfile = "????" ]]
     then
         test -f sqlite3/$bgfile'.db.gz' && gunzip sqlite3/$bgfile'.db.gz'
         test -f sqlite3/organism.db.gz && gunzip sqlite3/organism.db.gz
     fi
-#    if [ -n "${cutoff}" ]; then ARGS="$ARGS -c $cutoff"; fi
-#    if [ -n "${databases}" ]; then ARGS="$ARGS -d $databases"; fi
-#    if [ -n "${fgfile}" ]; then ARGS="$ARGS -f $fgfile"; fi
-#    if [ -n "${kobashome}" ]; then ARGS="$ARGS -k $kobashome"; fi #MIGHT WANT TO INCLUDE IN HELP INFO THAT THIS IS THE ABSOLUTE PATH IN THE CONTAINER
-#    if [ -n "${method}" ]; then ARGS="$ARGS -m $method"; fi
-#    if [ -n "${fdr}" ]; then ARGS="$ARGS -n $fdr"; fi
-#    if [ -n "${out}" ]; then ARGS="$ARGS -o $out"; fi
-#    if [ -n "${blastp}" ]; then ARGS="$ARGS -p $blastp"; fi #MAYBE I SHOULDN'T PROVIDE THIS OPTION IF IT NEVER CHANGES
-#    if [ -n "${kobasdb}" ]; then ARGS="$ARGS -q $kobasdb"; fi #MIGHT WANT TO INCLUDE IN HELP INFO THAT THIS IS THE ABSOLUTE PATH IN THE CONTAINER
-#    if [ -n "${blasthome}" ]; then ARGS="$ARGS -v $blasthome"; fi #MAYBE I SHOULDN'T PROVIDE THIS OPTION IF IT NEVER CHANGES
-#    if [ -n "${blastx}" ]; then ARGS="$ARGS -x $blastx"; fi #MAYBE I SHOULDN'T PROVIDE THIS OPTION IF IT NEVER CHANGES
-#    if [ -n "${blastdb}" ]; then ARGS="$ARGS -y $blastdb"; fi
+    if [ -n "${cutoff}" ]; then ARGS="$ARGS -c $cutoff"; fi
+    if [ -n "${databases}" ]; then ARGS="$ARGS -d $databases"; fi
+    if [ -n "${kobashome}" ]; then ARGS="$ARGS -k $kobashome"; fi #MIGHT WANT TO INCLUDE IN HELP INFO THAT THIS IS THE ABSOLUTE PATH IN THE CONTAINER
+    if [ -n "${method}" ]; then ARGS="$ARGS -m $method"; fi
+    if [ -n "${fdr}" ]; then ARGS="$ARGS -n $fdr"; fi
+    if [ -n "${blastp}" ]; then ARGS="$ARGS -p $blastp"; fi #MAYBE I SHOULDN'T PROVIDE THIS OPTION IF IT NEVER CHANGES
+    if [ -n "${kobasdb}" ]; then ARGS="$ARGS -q $kobasdb"; fi #MIGHT WANT TO INCLUDE IN HELP INFO THAT THIS IS THE ABSOLUTE PATH IN THE CONTAINER
+    if [ -n "${blasthome}" ]; then ARGS="$ARGS -v $blasthome"; fi #MAYBE I SHOULDN'T PROVIDE THIS OPTION IF IT NEVER CHANGES
+    if [ -n "${blastx}" ]; then ARGS="$ARGS -x $blastx"; fi #MAYBE I SHOULDN'T PROVIDE THIS OPTION IF IT NEVER CHANGES
+    if [ -n "${blastdb}" ]; then ARGS="$ARGS -y $blastdb"; fi
+
      kobas-identify -f $fgfile -b $bgfile -o $out $ARGS
 fi
 
