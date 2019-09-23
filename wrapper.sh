@@ -82,9 +82,7 @@ fi
 
 
 ARGS=''
-#THESE ARE DEFAULTED HERE FOR THE DE APP BUT CAN BE OVERRIDDEN IN OPTIONS FOR CLI
-eval="1e-05"
-threads=8
+BLARGS=''
 
 #SO THAT THIS CONTAINER CAN BE USED BOTH IN CLI AND DE I SET KOBASHOME, KOBASDB AND BLASTDB TO THE WORKING-DIR AND THEN PEOPLE CAN OPTIONALLY OVERRIDE IN CLI
 if [[ "$anno" = "true" ]]
@@ -103,19 +101,21 @@ then
     if [ -n "${blastx}" ]; then ARGS="$ARGS -x $blastx"; fi 
     if [ -n "${blastdb}" ]; then ARGS="$ARGS -y $blastdb"; fi
     if [ -n "${ortholog}" ]; then ARGS="$ARGS -z $ortholog"; fi
+    if [ -n "${eval}" ]; then BLARGS="$BLARGS -evalue $eval"; else BLARGS="$BLARGS -evalue 1e-05"; fi
+    if [ -n "${threads}" ]; then BLARGS="$BLARGS -num_threads $threads"; else BLARGS="$BLARGS -num_threads 8"; fi
     if [[ "$intype" = "fasta:pro" ]] 
     then 
 	test -f seq_pep.tar && tar -xf seq_pep.tar seq_pep/$species'.pep.fasta.gz'
 	test -f seq_pep/$species'.pep.fasta.gz' && gunzip seq_pep/$species'.pep.fasta.gz'
         makeblastdb -in seq_pep/$species'.pep.fasta'  -parse_seqids -dbtype prot -out seq_pep/$species'.pep.fasta'
-        blastp -query $infile -db seq_pep/$species'.pep.fasta' -out $species.tsv -outfmt 6 -evalue $eval -num_threads $threads
+        blastp -query $infile -db seq_pep/$species'.pep.fasta' -out $species.tsv -outfmt 6 $BLARGS
 	kobas-annotate  -i $species.tsv -t blastout:tab -s $species $ARGS
     elif [[ "$intype" = "fasta:nuc" ]]
     then
         test -f seq_pep.tar && tar -xf seq_pep.tar seq_pep/$species'.pep.fasta.gz'
 	test -f seq_pep/$species'.pep.fasta.gz' && gunzip seq_pep/$species'.pep.fasta.gz'
         makeblastdb -in seq_pep/$species'.pep.fasta'  -parse_seqids -dbtype prot -out seq_pep/$species'.pep.fasta'
-        blastx -query $infile -db seq_pep/$species'.pep.fasta' -out $species.tsv -outfmt 6 -evalue $eval -num_threads $threads
+        blastx -query $infile -db seq_pep/$species'.pep.fasta' -out $species.tsv -outfmt 6 $BLARGS
 	kobas-annotate -i $species.tsv -t blastout:tab -s $species -o $out $ARGS
     else
         kobas-annotate -i $infile -t $intype  -s $species -o $out  $ARGS
@@ -162,37 +162,41 @@ then
     if [ -n "${blastx}" ]; then ARGS="$ARGS -x $blastx"; fi
     if [ -n "${blastdb}" ]; then ARGS="$ARGS -y $blastdb"; fi
     if [ -n "${ortholog}" ]; then ARGS="$ARGS -z $ortholog"; fi
+    if [ -n "${eval}" ]; then BLARGS="$BLARGS -evalue $eval"; else BLARGS="$BLARGS -evalue 1e-05"; fi
+    if [ -n "${threads}" ]; then BLARGS="$BLARGS -num_threads $threads"; else BLARGS="$BLARGS -num_threads 8"; fi
     if [[ "$intype" = "fasta:pro" ]]
     then
         test -f seq_pep.tar && tar -xf seq_pep.tar seq_pep/$species'.pep.fasta.gz'
         test -f seq_pep/$species'.pep.fasta.gz' && gunzip seq_pep/$species'.pep.fasta.gz'
         makeblastdb -in seq_pep/$species'.pep.fasta'  -parse_seqids -dbtype prot -out seq_pep/$species'.pep.fasta'
-        blastp -query $infile -db seq_pep/$species'.pep.fasta' -out $species.tsv -outfmt 6 -evalue $eval -num_threads $threads
+        blastp -query $infile -db seq_pep/$species'.pep.fasta' -out $species.tsv -outfmt 6 $BLARGS
         kobas-annotate  -i $species.tsv -t blastout:tab -s $species $ARGS
     elif [[ "$intype" = "fasta:nuc" ]]
     then
         test -f seq_pep.tar && tar -xf seq_pep.tar seq_pep/$species'.pep.fasta.gz'
         test -f seq_pep/$species'.pep.fasta.gz' && gunzip seq_pep/$species'.pep.fasta.gz'
         makeblastdb -in seq_pep/$species'.pep.fasta'  -parse_seqids -dbtype prot -out seq_pep/$species'.pep.fasta'
-        blastx -query $infile -db seq_pep/$species'.pep.fasta' -out $species.tsv -outfmt 6 -evalue $eval -num_threads $threads
+        blastx -query $infile -db seq_pep/$species'.pep.fasta' -out $species.tsv -outfmt 6 $BLARGS
         kobas-annotate -i $species.tsv -t blastout:tab -s $species -o $out $ARGS
     else
         kobas-annotate -i $infile -t $intype  -s $species -o $out  $ARGS
     fi
 
-#    ARGS=''
-#    fgfile=$out
+    ARGS=''
+    fgfile=$out
 
-#    if [ -n "${cutoff}" ]; then ARGS="$ARGS -c $cutoff"; fi
-#    if [ -n "${databases}" ]; then ARGS="$ARGS -d $databases"; fi
-#    if [ -n "${bgfile}" ]; then ARGS="$ARGS -b $bgfile"; fi
-#    if [ -n "${method}" ]; then ARGS="$ARGS -m $method"; fi
-#    if [ -n "${kobashome}" ]; then ARGS="$ARGS -k $kobashome"; fi
-#    if [ -n "${blastp}" ]; then ARGS="$ARGS -p $blastp"; fi
-#    if [ -n "${kobasdb}" ]; then ARGS="$ARGS -q $kobasdb"; fi
-#    if [ -n "${blasthome}" ]; then ARGS="$ARGS -v $blasthome"; fi
-#    if [ -n "${blastx}" ]; then ARGS="$ARGS -x $blastx"; fi
-#    if [ -n "${blastdb}" ]; then ARGS="$ARGS -y $blastdb"; fi
+    if [ -n "${cutoff}" ]; then ARGS="$ARGS -c $cutoff"; fi
+    if [ -n "${databases}" ]; then ARGS="$ARGS -d $databases"; fi
+    if [ -n "${bgfile}" ]; then ARGS="$ARGS -b $bgfile"; fi
+    if [ -n "${method}" ]; then ARGS="$ARGS -m $method"; fi
+    if [ -n "${kobashome}" ]; then ARGS="$ARGS -k $kobashome"; fi
+    if [ -n "${blastp}" ]; then ARGS="$ARGS -p $blastp"; fi
+    if [ -n "${kobasdb}" ]; then ARGS="$ARGS -q $kobasdb"; fi
+    if [ -n "${blasthome}" ]; then ARGS="$ARGS -v $blasthome"; fi
+    if [ -n "${blastx}" ]; then ARGS="$ARGS -x $blastx"; fi
+    if [ -n "${blastdb}" ]; then ARGS="$ARGS -y $blastdb"; fi
 
-#    kobas-identify -f $fgfile -o $out $ARGS
+    kobas-identify -f $fgfile -o $out $ARGS
+
+    rm $species.tsv
 fi
