@@ -42,8 +42,8 @@ if [[ "$help" = "true" ]] ; then
 
     [-a runs KOBAS annotate]
     KOBAS annotate options:
-	-i INFILE (can be FASTA or one-per-lineidentifiers. See -t intype for details.
-	-s SPECIES (3 or 4 letter species abbreviation. Can be found here: ftp://ftp.cbi.pku.edu.cn/pub/KOBAS_3.0_DOWNLOAD/species_abbr.txt)
+	-i INFILE can be FASTA or one-per-lineidentifiers. See -t intype for details.
+	-s SPECIES 3 or 4 letter species abbreviation (can be found here: ftp://ftp.cbi.pku.edu.cn/pub/KOBAS_3.0_DOWNLOAD/species_abbr.txt or here: https://www.kegg.jp/kegg/catalog/org_list.html)
 	-o OUTPUT file (Default is stdout.)
     	[-l LIST available species, or list available databases for a specific species]
 	[-t INTYPE (fasta:pro, fasta:nuc, blastout:xml, blastout:tab, id:ncbigi, id:uniprot, id:ensembl, id:ncbigene), default fasta:pro]
@@ -62,7 +62,7 @@ if [[ "$help" = "true" ]] ; then
     [-g runs KOBAS identify]
 	KOBAS identify options:
 	-f FGFILE foreground file, the output of annotate
-	-b BGFILE background file, the output of annotate (3 or 4-letter file name is not allowed), or species abbreviation, default same species as annotate]
+	-b BGFILE background file, species abbreviation, see this list for species codes: https://www.kegg.jp/kegg/catalog/org_list.html
         -o OUTPUT file (Default is stdout.)
 	[-d DB databases for selection, 1-letter abbreviation separated by "/": K for KEGG PATHWAY, n for PID, b for BioCarta, R for Reactome, B for BioCyc, p for PANTHER,
                o for OMIM, k for KEGG DISEASE, f for FunDO, g for GAD, N for NHGRI GWAS Catalog and G for Gene Ontology, default K/n/b/R/B/p/o/k/f/g/N/]
@@ -125,12 +125,10 @@ fi
 
 if [[ "$ident" = "true" ]]
 then
-    if [[ $bgfile = "???" ]] || [[ $bgfile = "????" ]]
-    then
-	test -f sqlite3.tar && tar -xf sqlite3.tar  sqlite3/$species'.db.gz' && tar -xf sqlite3.tar sqlite3/organism.db.gz
-        test -f sqlite3/$bgfile'.db.gz' && gunzip sqlite3/$bgfile'.db.gz'
-        test -f sqlite3/organism.db.gz && gunzip sqlite3/organism.db.gz
-    fi
+    test -f sqlite3.tar && tar -xf sqlite3.tar  sqlite3/$bgfile'.db.gz' && tar -xf sqlite3.tar sqlite3/organism.db.gz
+    test -f sqlite3/$bgfile'.db.gz' && gunzip sqlite3/$bgfile'.db.gz'
+    test -f sqlite3/organism.db.gz && gunzip sqlite3/organism.db.gz
+
     if [ -n "${cutoff}" ]; then ARGS="$ARGS -c $cutoff"; fi
     if [ -n "${databases}" ]; then ARGS="$ARGS -d $databases"; fi
     if [ -n "${kobashome}" ]; then ARGS="$ARGS -k $kobashome"; fi
