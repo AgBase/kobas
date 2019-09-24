@@ -109,7 +109,7 @@ then
 	test -f seq_pep/$species'.pep.fasta.gz' && gunzip seq_pep/$species'.pep.fasta.gz'
         makeblastdb -in seq_pep/$species'.pep.fasta'  -parse_seqids -dbtype prot -out seq_pep/$species'.pep.fasta'
         blastp -query $infile -db seq_pep/$species'.pep.fasta' -out $species.tsv -outfmt 6 $BLARGS
-	kobas-annotate  -i $species.tsv -t blastout:tab -s $species $ARGS
+	kobas-annotate  -i $species.tsv -t blastout:tab -s $species -o $out $ARGS
     elif [[ "$intype" = "fasta:nuc" ]]
     then
         test -f seq_pep.tar && tar -xf seq_pep.tar seq_pep/$species'.pep.fasta.gz'
@@ -179,7 +179,7 @@ then
         blastx -query $infile -db seq_pep/$species'.pep.fasta' -out $species.tsv -outfmt 6 $BLARGS
         kobas-annotate -i $species.tsv -t blastout:tab -s $species -o $out $ARGS
     else
-        kobas-annotate -i $infile -t $intype  -s $species -o $out  $ARGS
+        kobas-annotate -i $infile -t $intype  -s $species -o $out'_annotate.txt'  $ARGS
     fi
 
     ARGS=''
@@ -196,7 +196,6 @@ then
     if [ -n "${blastx}" ]; then ARGS="$ARGS -x $blastx"; fi
     if [ -n "${blastdb}" ]; then ARGS="$ARGS -y $blastdb"; fi
 
-    kobas-identify -f $fgfile -o $out $ARGS
+    kobas-identify -f $fgfile -o $out'_identify.txt' $ARGS
 
-    rm $species.tsv
 fi
