@@ -15,6 +15,6 @@ RUN chmod a+r /etc/kobasrc
 # Entrypoint
 ENTRYPOINT ["/usr/bin/wrapper.sh"]
 
-RUN mkdir /work-dir 
+RUN mkdir /work-dir /seq_pep /sqlite3
 
 WORKDIR /work-dir
