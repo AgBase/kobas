@@ -91,9 +91,8 @@ then
     test -f sqlite3/$species'.db.gz' && gunzip sqlite3/$species'.db.gz'
     test -f sqlite3/organism.db.gz && gunzip sqlite3/organism.db.gz
 
-    if [ -n "${coverage}" ]; then ARGS="$ARGS -C $coverage"; fi
+    if [ -n "${coverage}" ]; then ARGS="$ARGS -c $coverage"; fi
     if [ -n "${kobashome}" ]; then ARGS="$ARGS -k $kobashome"; fi
-    if [ -n "${fdr}" ]; then ARGS="$ARGS -n $fdr"; fi
     if [ -n "${out}" ]; then ARGS="$ARGS -o $out"; fi
     if [ -n "${blastp}" ]; then ARGS="$ARGS -p $blastp"; fi
     if [ -n "${kobasdb}" ]; then ARGS="$ARGS -q $kobasdb"; fi
@@ -152,9 +151,8 @@ then
     test -f sqlite3/$species'.db.gz' && gunzip sqlite3/$species'.db.gz'
     test -f sqlite3/organism.db.gz && gunzip sqlite3/organism.db.gz
 
-    if [ -n "${coverage}" ]; then ARGS="$ARGS -C $coverage"; fi
+    if [ -n "${coverage}" ]; then ARGS="$ARGS -c $coverage"; fi
     if [ -n "${kobashome}" ]; then ARGS="$ARGS -k $kobashome"; fi
-    if [ -n "${fdr}" ]; then ARGS="$ARGS -n $fdr"; fi
     if [ -n "${out}" ]; then ARGS="$ARGS -o $out"; fi
     if [ -n "${blastp}" ]; then ARGS="$ARGS -p $blastp"; fi
     if [ -n "${kobasdb}" ]; then ARGS="$ARGS -q $kobasdb"; fi
