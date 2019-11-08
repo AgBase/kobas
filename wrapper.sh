@@ -183,7 +183,6 @@ then
 
     ARGS=''
     fgfile=$out
-    bgfile=$species
 
     if [ -n "${cutoff}" ]; then ARGS="$ARGS -c $cutoff"; fi
     if [ -n "${databases}" ]; then ARGS="$ARGS -d $databases"; fi
@@ -196,6 +195,6 @@ then
     if [ -n "${blastx}" ]; then ARGS="$ARGS -x $blastx"; fi
     if [ -n "${blastdb}" ]; then ARGS="$ARGS -y $blastdb"; fi
 
-    kobas-identify -f $fgfile -b $bgfile -o $out'_identify.txt' $ARGS
+    kobas-identify -f $fgfile -o $out'_identify.txt' $ARGS
 
 fi
