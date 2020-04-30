@@ -3,37 +3,36 @@
 
 while getopts ab:c:C:d:e:f:ghi:jk:l:m:n:o:p:q:r:s:S:t:T:v:x:y:z option
 do
-        case "${option}"
-        in
-
-                a) anno=true ;;
-                b) bgfile=${OPTARG};;
-                c) cutoff=${OPTARG};;
-		C) coverage=${OPTARG};;
-                d) databases=${OPTARG};;
-                f) fgfile=${OPTARG};;
-                e) eval=${OPTARG};;
-                g) ident=true;;
-		h) help=true;;
-		i) infile=${OPTARG};;
-		j) annoident=true;;
-		k) kobashome=${OPTARG};;
-		l) list=${OPTARG};;
-                m) method=${OPTARG};;
-		n) fdr=${OPTARG};;
-                o) out=${OPTARG};;
-		p) blastp=${OPTARG};;
-		q) kobasdb=${OPTARG};;
-		r) rank=${OPTARG};;
-                s) species=${OPTARG};;
-		S) inspecies=${OPTARG};;
-                t) intype=${OPTARG};;
-		T) threads=${OPTARG};;
-                v) blasthome=${OPTARG};;
-                x) blastx=${OPTARG};;
-                y) blastdb=${OPTARG};;
-                z) ortholog=${OPTARG};;
-        esac
+    case "${option}"
+    in
+    a) anno=true ;;
+    b) bgfile=${OPTARG};;
+    ) cutoff=${OPTARG};;
+	C) coverage=${OPTARG};;
+    d) databases=${OPTARG};;
+    f) fgfile=${OPTARG};;
+    e) eval=${OPTARG};;
+    g) ident=true;;
+	h) help=true;;
+	i) infile=${OPTARG};;
+	j) annoident=true;;
+	k) kobashome=${OPTARG};;
+	l) list=${OPTARG};;
+    m) method=${OPTARG};;
+	n) fdr=${OPTARG};;
+    o) out=${OPTARG};;
+	p) blastp=${OPTARG};;
+	q) kobasdb=${OPTARG};;
+	r) rank=${OPTARG};;
+    s) species=${OPTARG};;
+	S) inspecies=${OPTARG};;
+    t) intype=${OPTARG};;
+	T) threads=${OPTARG};;
+    v) blasthome=${OPTARG};;
+    x) blastx=${OPTARG};;
+    y) blastdb=${OPTARG};;
+    z) ortholog=${OPTARG};;
+    esac
 done
 #####################################################################################################
 if [[ "$help" = "true" ]] ; then
