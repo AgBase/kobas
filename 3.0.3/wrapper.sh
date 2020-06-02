@@ -83,7 +83,8 @@ fi
 ARGS=''
 BLARGS=''
 
-#SO THAT THIS CONTAINER CAN BE USED BOTH IN CLI AND DE I SET KOBASHOME, KOBASDB AND BLASTDB TO THE WORKING-DIR AND THEN PEOPLE CAN OPTIONALLY OVERRIDE IN CLI
+# SO THAT THIS CONTAINER CAN BE USED BOTH IN CLI AND DE I SET KOBASHOME, KOBASDB AND BLASTDB 
+# TO THE WORKING-DIR AND THEN PEOPLE CAN OPTIONALLY OVERRIDE IN CLI
 if [[ "$anno" = "true" ]]
 then 
     test -f sqlite3.tar && tar -xf sqlite3.tar  sqlite3/$species'.db.gz' && tar -xf sqlite3.tar sqlite3/organism.db.gz
@@ -104,15 +105,15 @@ then
     if [ -n "${threads}" ]; then BLARGS="$BLARGS -num_threads $threads"; else BLARGS="$BLARGS -num_threads 8"; fi
     if [[ "$intype" = "fasta:pro" ]]
     then
-        test -f seq_pep.tar && tar -xf seq_pep.tar seq_pep/$species'.pep.fasta.gz'
-        test -f seq_pep/$species'.pep.fasta.gz' && gunzip seq_pep/$species'.pep.fasta.gz'
+        test ! -e seq_pep/$species'.pep.fasta.gz' -a -f seq_pep.tar && tar -xf seq_pep.tar seq_pep/$species'.pep.fasta.gz'
+        test ! -e seq_pep/$species'.pep.fasta.gz' -a -f seq_pep/$species'.pep.fasta.gz' && gunzip seq_pep/$species'.pep.fasta.gz'
         makeblastdb -in seq_pep/$species'.pep.fasta'  -parse_seqids -dbtype prot -out seq_pep/$species'.pep.fasta'
         blastp -query $infile -db seq_pep/$species'.pep.fasta' -out $species.tsv -outfmt 6 $BLARGS
         kobas-annotate  -i $species.tsv -t blastout:tab -s $species -o $out $ARGS
     elif [[ "$intype" = "fasta:nuc" ]]
     then
-        test -f seq_pep.tar && tar -xf seq_pep.tar seq_pep/$species'.pep.fasta.gz'
-        test -f seq_pep/$species'.pep.fasta.gz' && gunzip seq_pep/$species'.pep.fasta.gz'
+        test ! -e seq_pep/$species'.pep.fasta.gz' -a -f seq_pep.tar && tar -xf seq_pep.tar seq_pep/$species'.pep.fasta.gz'
+        test ! -e seq_pep/$species'.pep.fasta.gz' -a -f seq_pep/$species'.pep.fasta.gz' && gunzip seq_pep/$species'.pep.fasta.gz'
         makeblastdb -in seq_pep/$species'.pep.fasta'  -parse_seqids -dbtype prot -out seq_pep/$species'.pep.fasta'
         blastx -query $infile -db seq_pep/$species'.pep.fasta' -out $species.tsv -outfmt 6 $BLARGS
         kobas-annotate -i $species.tsv -t blastout:tab -s $species -o $out $ARGS
@@ -126,8 +127,8 @@ fi
 if [[ "$ident" = "true" ]]
 then
     test -f sqlite3.tar && tar -xf sqlite3.tar  sqlite3/$bgfile'.db.gz' && tar -xf sqlite3.tar sqlite3/organism.db.gz
-    test -f sqlite3/$bgfile'.db.gz' && gunzip sqlite3/$bgfile'.db.gz'
-    test -f sqlite3/organism.db.gz && gunzip sqlite3/organism.db.gz
+    test ! -e sqlite3/$bgfile'.db.gz' -a -f sqlite3/$bgfile'.db.gz' && gunzip sqlite3/$bgfile'.db.gz'
+    test ! -e gunzip sqlite3/organism.db.gz -a -f sqlite3/organism.db.gz && gunzip sqlite3/organism.db.gz
 
     if [ -n "${cutoff}" ]; then ARGS="$ARGS -c $cutoff"; fi
     if [ -n "${databases}" ]; then ARGS="$ARGS -d $databases"; fi
@@ -147,8 +148,8 @@ fi
 if [[ "$annoident" = "true" ]]
 then
     test -f sqlite3.tar && tar -xf sqlite3.tar  sqlite3/$species'.db.gz' && tar -xf sqlite3.tar sqlite3/organism.db.gz
-    test -f sqlite3/$species'.db.gz' && gunzip sqlite3/$species'.db.gz'
-    test -f sqlite3/organism.db.gz && gunzip sqlite3/organism.db.gz
+    test ! -e sqlite3/$species'.db.gz' -f sqlite3/$species'.db.gz' && gunzip sqlite3/$species'.db.gz'
+    test ! -e sqlite3/organism.db.gz -a -f sqlite3/organism.db.gz && gunzip sqlite3/organism.db.gz
 
     if [ -n "${coverage}" ]; then ARGS="$ARGS -c $coverage"; fi
     if [ -n "${kobashome}" ]; then ARGS="$ARGS -k $kobashome"; fi
@@ -165,14 +166,14 @@ then
     if [[ "$intype" = "fasta:pro" ]]
     then
         test -f seq_pep.tar && tar -xf seq_pep.tar seq_pep/$species'.pep.fasta.gz'
-        test -f seq_pep/$species'.pep.fasta.gz' && gunzip seq_pep/$species'.pep.fasta.gz'
+        test ! -e seq_pep/$species'.pep.fasta.gz' -a -f seq_pep/$species'.pep.fasta.gz' && gunzip seq_pep/$species'.pep.fasta.gz'
         makeblastdb -in seq_pep/$species'.pep.fasta'  -parse_seqids -dbtype prot -out seq_pep/$species'.pep.fasta'
         blastp -query $infile -db seq_pep/$species'.pep.fasta' -out $species.tsv -outfmt 6 $BLARGS
         kobas-annotate  -i $species.tsv -t blastout:tab -s $species -o $out'_annotate.txt' $ARGS
     elif [[ "$intype" = "fasta:nuc" ]]
     then
         test -f seq_pep.tar && tar -xf seq_pep.tar seq_pep/$species'.pep.fasta.gz'
-        test -f seq_pep/$species'.pep.fasta.gz' && gunzip seq_pep/$species'.pep.fasta.gz'
+        test ! -e seq_pep/$species'.pep.fasta.gz' -a -f seq_pep/$species'.pep.fasta.gz' && gunzip seq_pep/$species'.pep.fasta.gz'
         makeblastdb -in seq_pep/$species'.pep.fasta'  -parse_seqids -dbtype prot -out seq_pep/$species'.pep.fasta'
         blastx -query $infile -db seq_pep/$species'.pep.fasta' -out $species.tsv -outfmt 6 $BLARGS
         kobas-annotate -i $species.tsv -t blastout:tab -s $species -o $out'_annotate.txt' $ARGS
