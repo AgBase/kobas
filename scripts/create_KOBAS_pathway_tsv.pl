@@ -39,7 +39,9 @@ while (my $rec = <IN>){
 	elsif ( ($rec !~ /^Query:/) && (defined $protein) && ($rec ne '////') ){			#get valid pathways
 		if ( ($rec =~ /Reactome/) || ($rec =~ /KEGG/) || ($rec =~ /BioCyc/) ){
 			my @pathway_arr = split "\t", $rec;
-			$pathways = $pathways . ',' . $pathway_arr[$#pathway_arr];
+			my $db = $pathway_arr[ $#pathway_arr - 1 ];
+			if ( $db =~ /KEGG/ ){ $db = 'KEGG'; }
+			$pathways = $pathways . ',' . $db . ':' . $pathway_arr[$#pathway_arr];
 		}
 	}
 }
