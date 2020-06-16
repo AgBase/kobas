@@ -1,22 +1,25 @@
 #!/usr/bin/perl -w
 # Solgenomics@BTI // ACBS@UoA
 # Surya Saha June 10, 2020
-# Purpose: Create a TSV with protein name and list of Reactome, BioCyc and KEGG pathways from KOBAS
+# Purpose: Create 2 OUT_ACC_PATHWAYput files
+# 1. TSV with protein name and list of Reactome, BioCyc and KEGG pathways from KOBAS
+# 2. TSV Reactome, BioCyc and KEGG pathways from KOBAS and a list of member proteins
 
 
 unless (@ARGV == 1){
-	print "USAGE: $0 <KOBAS output>\n";
+	print "USAGE: $0 <KOBAS OUTPUT FILE>\n";
 	exit;
 }
 
 use strict;
 use warnings;
 
-my ($ifname,$protein,$pathways);
+my ($ifname,$protein,$pathways,%pathway_hash);
 
 $ifname=$ARGV[0];
 unless(open(IN,$ifname)){print "not able to open ".$ifname."\n\n";exit;}
-unless(open(OUT,">$ifname.KOBAS.pathways.tsv")){print "not able to open ".$ifname.".KOBAS.pathways.tsv\n\n";exit;}
+unless(open(OUT_ACC_PATHWAY,">${ifname}_acc_KOBAS_pathways.tsv")){print "not able to open ".$ifname."_acc_KOBAS_pathways.tsv\n\n";exit;}
+unless(open(OUT_PATHWAY_ACC,">${ifname}_KOBAS_pathways_acc.tsv")){print "not able to open ".$ifname."_KOBAS_pathways_acc.tsv\n\n";exit;}
 
 
 while (my $rec = <IN>){
@@ -30,7 +33,7 @@ while (my $rec = <IN>){
 	elsif( ($rec =~ /^Query:/) && (defined $protein) ){
 		if ( length $pathways > 0 ){
 			$pathways =~ s/^,//;
-			print OUT "$protein\t$pathways\n";
+			print OUT_ACC_PATHWAY "$protein\t$pathways\n";
 		}
 		my @rec_arr = split "\t", $rec;
 		$protein = $rec_arr[1];															#get new protein name
@@ -42,10 +45,21 @@ while (my $rec = <IN>){
 			my $db = $pathway_arr[ $#pathway_arr - 1 ];
 			if ( $db =~ /KEGG/ ){ $db = 'KEGG'; }
 			$pathways = $pathways . ',' . $db . ':' . $pathway_arr[$#pathway_arr];
+
+			if ( exists $pathway_hash{$db . ':' . $pathway_arr[$#pathway_arr] } ){		#add protein to pathway hash
+				$pathway_hash{$db . ':' . $pathway_arr[$#pathway_arr] } = $pathway_hash{$db . ':' . $pathway_arr[$#pathway_arr] } . ',' . $protein;
+			}
+			else{
+				$pathway_hash{$db . ':' . $pathway_arr[$#pathway_arr] } = $protein;	
+			}
 		}
 	}
 }
 
+while (my ($key,$value) = each %pathway_hash){
+	print OUT_PATHWAY_ACC $key . "\t" .$value . "\n";
+}
 
 close (IN);
-close (OUT);
+close (OUT_ACC_PATHWAY);
+close (OUT_PATHWAY_ACC);
