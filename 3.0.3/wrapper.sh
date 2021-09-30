@@ -5,7 +5,7 @@ while getopts ab:c:C:d:e:f:ghi:jk:l:m:n:o:p:q:r:s:S:t:T:v:x:y:z option
 do
     case "${option}"
     in
-    a) anno=true ;;
+    a) anno=true;;
     b) bgfile=${OPTARG};;
     c) cutoff=${OPTARG};;
     C) coverage=${OPTARG};;
