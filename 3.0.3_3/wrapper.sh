@@ -77,6 +77,7 @@ if [[ "$help" = "true" ]] ; then
         [-x BLASTX The path to blastx. This is the absolute path in the container.]
 
     [-j runs both KOBAS annotate and identify]"
+    exit
 fi
 
 
@@ -91,13 +92,14 @@ then
 elif [[ -e seq_pep.tar && -e sqlite3.tar  ]]
 then
     echo "all tar files present"
-    tar -xf seq_pep.tar seq_pep/$species'.pep.fasta.gz' &&  gunzip seq_pep/$species'.pep.fasta.gz'
-    tar -xf sqlite3.tar sqlite3/$species'.db.gz' && gunzip sqlite3/$species'.db.gz'
+    tar -xf seq_pep.tar seq_pep/$species'.pep.fasta'.gz &&  gunzip seq_pep/$species'.pep.fasta'.gz
+    tar -xf sqlite3.tar sqlite3/$species'.db'.gz && gunzip sqlite3/$species'.db'.gz
     tar -xf sqlite3.tar sqlite3/organism.db.gz && gunzip sqlite3/organism.db.gz
     chmod -R a+rwx seq_pep/ sqlite3/
 else
-    wget -P seq_pep/ https://data.cyverse.org/dav-anon/iplant/projects/iplantcollaborative/protein_blast_dbs/kobas/seq_pep/$species'.pep.fasta.gz' && gunzip seq_pep/$species'.pep.fasta.gz'
-    wget -P sqlite3/ https://data.cyverse.org/dav-anon/iplant/projects/iplantcollaborative/protein_blast_dbs/kobas/sqlite3/$species'.db.gz'  && gunzip sqlite3/$species'.db.gz'
+echo $species
+    wget -P seq_pep/ https://data.cyverse.org/dav-anon/iplant/projects/iplantcollaborative/protein_blast_dbs/kobas/seq_pep/$species'.pep.fasta'.gz && gunzip seq_pep/$species'.pep.fasta'.gz
+    wget -P sqlite3/ https://data.cyverse.org/dav-anon/iplant/projects/iplantcollaborative/protein_blast_dbs/kobas/sqlite3/$species'.db'.gz  && gunzip sqlite3/$species'.db'.gz
     wget -P sqlite3/ https://data.cyverse.org/dav-anon/iplant/projects/iplantcollaborative/protein_blast_dbs/kobas/sqlite3/organism.db.gz  && gunzip sqlite3/organism.db.gz
     chmod -R a+rwx seq_pep/ sqlite3/
 fi
@@ -200,4 +202,4 @@ fi
 
 create_KOBAS_pathway_tsv.pl $out
 
-#rm -r seq_pep/ sqlite3/
+rm -r seq_pep/ sqlite3/
